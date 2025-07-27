@@ -290,7 +290,9 @@ export class DatabaseManager {
         return false;
       }
 
-      const currentChildIds = JSON.parse(result[0] as string) as string[];
+      const currentChildIds = result[0]
+        ? (JSON.parse(result[0] as string) as string[])
+        : [];
 
       // Check if childId already exists to avoid duplicates
       if (currentChildIds.includes(childId)) {
@@ -436,8 +438,8 @@ export class DatabaseManager {
     return {
       id: row.id,
       timestamp: new Date(row.timestamp),
-      parentIds: JSON.parse(row.parent_ids),
-      childIds: JSON.parse(row.child_ids),
+      parentIds: row.parent_ids ? JSON.parse(row.parent_ids) : [],
+      childIds: row.child_ids ? JSON.parse(row.child_ids) : [],
       contextId: row.context_id,
       label: row.label,
       description: row.description,
@@ -495,11 +497,11 @@ export class DatabaseManager {
       name: row.name,
       description: row.description,
       color: row.color,
-      keywords: JSON.parse(row.keywords),
+      keywords: row.keywords ? JSON.parse(row.keywords) : [],
       ...(row.parent_context && { parentContext: row.parent_context }),
       isActive: row.is_active === 1,
       createdAt: new Date(row.created_at),
-      metadata: JSON.parse(row.metadata),
+      metadata: row.metadata ? JSON.parse(row.metadata) : {},
     };
   }
 

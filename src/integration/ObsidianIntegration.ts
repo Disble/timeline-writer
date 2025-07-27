@@ -326,9 +326,33 @@ export class ObsidianIntegration {
   };
 
   private isPathExcluded(path: string): boolean {
-    return this.config.excludePatterns.some(pattern =>
-      new RegExp(pattern).test(path)
-    );
+    return this.config.excludePatterns.some(pattern => {
+      // Convert glob pattern to regex
+      const regexPattern = pattern
+        .replace(/\./g, '\\.') // Escape dots
+        .replace(/\*\*/g, '.*') // Convert ** to .*
+        .replace(/\*/g, '[^/]*') // Convert * to [^/]*
+        .replace(/\?/g, '.') // Convert ? to .
+        .replace(/\[/g, '\\[') // Escape [
+        .replace(/\]/g, '\\]') // Escape ]
+        .replace(/\(/g, '\\(') // Escape (
+        .replace(/\)/g, '\\)') // Escape )
+        .replace(/\|/g, '\\|') // Escape |
+        .replace(/\^/g, '\\^') // Escape ^
+        .replace(/\$/g, '\\$') // Escape $
+        .replace(/\+/g, '\\+') // Escape +
+        .replace(/\{/g, '\\{') // Escape {
+        .replace(/\}/g, '\\}') // Escape }
+        .replace(/\\/g, '\\\\'); // Escape backslashes
+
+      try {
+        const regex = new RegExp(regexPattern);
+        return regex.test(path);
+      } catch (error) {
+        this.logger.warn('Invalid exclude pattern', { pattern, error });
+        return false;
+      }
+    });
   }
 
   // Public API methods
