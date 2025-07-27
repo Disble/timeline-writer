@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Run lint-staged on staged files first
+lint-staged
+
+# Then run full validation
+npm run pre-commit
