@@ -1,0 +1,11 @@
+{
+  "id": "timeline-writer",
+  "name": "Timeline Writer",
+  "version": "0.1.0",
+  "minAppVersion": "1.4.16",
+  "description": "Temporal versioning for fiction writers with intelligent context detection",
+  "author": "Timeline Writer Team",
+  "authorUrl": "",
+  "fundingUrl": "",
+  "isDesktopOnly": false
+}
