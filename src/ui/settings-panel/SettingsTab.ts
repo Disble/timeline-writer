@@ -32,7 +32,9 @@ export class TimelineWriterSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName('Detection Sensitivity')
-      .setDesc('How sensitive the context detection should be (0.1 = very sensitive, 1.0 = very conservative)')
+      .setDesc(
+        'How sensitive the context detection should be (0.1 = very sensitive, 1.0 = very conservative)'
+      )
       .addSlider(slider =>
         slider
           .setLimits(0.1, 1.0, 0.1)
@@ -46,7 +48,9 @@ export class TimelineWriterSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName('Minimum Content Length')
-      .setDesc('Minimum number of characters needed to trigger context detection')
+      .setDesc(
+        'Minimum number of characters needed to trigger context detection'
+      )
       .addText(text =>
         text
           .setPlaceholder('100')
@@ -65,7 +69,9 @@ export class TimelineWriterSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName('Enable Auto Snapshots')
-      .setDesc('Automatically create snapshots when context changes are detected')
+      .setDesc(
+        'Automatically create snapshots when context changes are detected'
+      )
       .addToggle(toggle =>
         toggle
           .setValue(this.plugin.settings.enableAutoSnapshots)
@@ -85,7 +91,10 @@ export class TimelineWriterSettingTab extends PluginSettingTab {
           .addOption('high', 'High (more frequent)')
           .setValue(this.plugin.settings.snapshotFrequency)
           .onChange(async value => {
-            this.plugin.settings.snapshotFrequency = value as 'low' | 'medium' | 'high';
+            this.plugin.settings.snapshotFrequency = value as
+              | 'low'
+              | 'medium'
+              | 'high';
             await this.plugin.saveSettings();
           })
       );
@@ -223,7 +232,11 @@ export class TimelineWriterSettingTab extends PluginSettingTab {
           .addOption('debug', 'Debug')
           .setValue(this.plugin.settings.logLevel)
           .onChange(async value => {
-            this.plugin.settings.logLevel = value as 'error' | 'warn' | 'info' | 'debug';
+            this.plugin.settings.logLevel = value as
+              | 'error'
+              | 'warn'
+              | 'info'
+              | 'debug';
             await this.plugin.saveSettings();
           })
       );

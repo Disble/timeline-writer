@@ -1,12 +1,17 @@
-import { Plugin } from 'obsidian';
-import { TimelineWriterSettings, DEFAULT_SETTINGS } from './data/models/settings';
+import { Plugin, TFile } from 'obsidian';
+import {
+  TimelineWriterSettings,
+  DEFAULT_SETTINGS,
+} from './data/models/settings';
 import { TimelineWriterSettingTab } from './ui/settings-panel/SettingsTab';
+import { Logger } from './utils/logger';
 
 export default class TimelineWriterPlugin extends Plugin {
   settings: TimelineWriterSettings = DEFAULT_SETTINGS;
+  private logger = Logger.getInstance();
 
   async onload() {
-    console.log('Loading Timeline Writer plugin');
+    this.logger.info('Loading Timeline Writer plugin');
 
     // Load settings
     await this.loadSettings();
@@ -15,9 +20,9 @@ export default class TimelineWriterPlugin extends Plugin {
     this.addSettingTab(new TimelineWriterSettingTab(this.app, this));
 
     // Add ribbon icon
-    this.addRibbonIcon('clock', 'Timeline Writer', (evt: MouseEvent) => {
+    this.addRibbonIcon('clock', 'Timeline Writer', (_evt: MouseEvent) => {
       // TODO: Open timeline view
-      console.log('Timeline Writer clicked');
+      this.logger.info('Timeline Writer clicked');
     });
 
     // Add commands
@@ -26,7 +31,7 @@ export default class TimelineWriterPlugin extends Plugin {
       name: 'Open Timeline View',
       callback: () => {
         // TODO: Implement timeline view
-        console.log('Open timeline view command');
+        this.logger.info('Open timeline view command');
       },
     });
 
@@ -35,24 +40,25 @@ export default class TimelineWriterPlugin extends Plugin {
       name: 'Create Manual Checkpoint',
       callback: () => {
         // TODO: Implement checkpoint creation
-        console.log('Create checkpoint command');
+        this.logger.info('Create checkpoint command');
       },
     });
 
     // Register events
-    this.registerEvent(
-      this.app.vault.on('modify', this.handleFileModify.bind(this))
-    );
+    // TODO: Register proper vault events when implementing version tracking
+    // this.registerEvent(
+    //   this.app.vault.on('modify', (file: TFile) => this.handleFileModify(file))
+    // );
 
-    this.registerEvent(
-      this.app.vault.on('create', this.handleFileCreate.bind(this))
-    );
+    // this.registerEvent(
+    //   this.app.vault.on('create', (file: TFile) => this.handleFileCreate(file))
+    // );
 
-    console.log('Timeline Writer plugin loaded successfully');
+    this.logger.info('Timeline Writer plugin loaded successfully');
   }
 
   async onunload() {
-    console.log('Unloading Timeline Writer plugin');
+    this.logger.info('Unloading Timeline Writer plugin');
   }
 
   async loadSettings() {
@@ -63,13 +69,13 @@ export default class TimelineWriterPlugin extends Plugin {
     await this.saveData(this.settings);
   }
 
-  private async handleFileModify(file: any) {
+  private async handleFileModify(file: TFile) {
     // TODO: Implement context detection and versioning
-    console.log('File modified:', file.path);
+    this.logger.info('File modified:', file.path);
   }
 
-  private async handleFileCreate(file: any) {
+  private async handleFileCreate(file: TFile) {
     // TODO: Initialize versioning for new file
-    console.log('File created:', file.path);
+    this.logger.info('File created:', file.path);
   }
 }

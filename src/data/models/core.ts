@@ -51,7 +51,7 @@ export interface ContextDefinition {
   parentContext?: string;
   isActive: boolean;
   createdAt: Date;
-  metadata: Record<string, any>;
+  metadata: Record<string, string | number | boolean | Date | null>;
 }
 
 export interface FileVersionHistory {
@@ -75,10 +75,27 @@ export interface TimelineBranch {
 }
 
 // Analysis and Detection Models
+export interface ContextEvidence {
+  type?: string;
+  suggestedContext?: string;
+  matches?: Array<{
+    keyword: string;
+    occurrences: number;
+    confidence: number;
+  }>;
+  totalMatches?: number;
+  score?: number;
+  breakDuration?: number;
+  averageBreakDuration?: number;
+  previousSessionIntensity?: number;
+  suggestion?: string;
+  [key: string]: unknown;
+}
+
 export interface ContextSignal {
   type: 'semantic' | 'temporal' | 'behavioral' | 'keyword';
   confidence: number; // 0-1
-  evidence: any;
+  evidence: ContextEvidence;
   weight: number;
 }
 
@@ -131,9 +148,9 @@ export interface DiffChunk {
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error' | 'critical';
 
 export interface Logger {
-  debug(message: string, context?: any): void;
-  info(message: string, context?: any): void;
-  warn(message: string, context?: any): void;
-  error(message: string, context?: any): void;
-  critical(message: string, context?: any): void;
+  debug(message: string, context?: unknown): void;
+  info(message: string, context?: unknown): void;
+  warn(message: string, context?: unknown): void;
+  error(message: string, context?: unknown): void;
+  critical(message: string, context?: unknown): void;
 }

@@ -1,0 +1,9 @@
+node_modules
+dist
+main.js
+*.min.js
+coverage
+.nyc_output
+*.log
+package-lock.json
+yarn.lock

@@ -9,7 +9,7 @@ module.exports = {
   },
   extends: [
     'eslint:recommended',
-    '@typescript-eslint/recommended',
+    'plugin:@typescript-eslint/recommended',
     'plugin:react/recommended',
     'plugin:react-hooks/recommended'
   ],
@@ -35,9 +35,6 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
-    '@typescript-eslint/no-explicit-any': 'warn',
-    '@typescript-eslint/no-non-null-assertion': 'warn',
-    '@typescript-eslint/prefer-const': 'error',
     '@typescript-eslint/no-empty-function': 'warn',
     
     // React rules
@@ -52,7 +49,6 @@ module.exports = {
     'no-debugger': 'error',
     'no-duplicate-imports': 'error',
     'no-unused-vars': 'off', // Handled by TypeScript
-    'prefer-const': 'error',
     'no-var': 'error',
     'object-shorthand': 'error',
     'prefer-template': 'error'
@@ -62,5 +58,13 @@ module.exports = {
     'dist/',
     'main.js',
     '*.d.ts'
+  ],
+  overrides: [
+    {
+      files: ['src/utils/logger.ts'],
+      rules: {
+        'no-console': 'off'
+      }
+    }
   ]
 };

@@ -1,9 +1,9 @@
 import TimelineWriterPlugin from '../main';
-import { createMockApp, createMockPlugin } from './setup';
+import { createMockApp } from './setup';
 
 describe('TimelineWriterPlugin', () => {
   let plugin: TimelineWriterPlugin;
-  let mockApp: any;
+  let mockApp: ReturnType<typeof createMockApp>;
 
   beforeEach(() => {
     mockApp = createMockApp();
@@ -24,25 +24,33 @@ describe('TimelineWriterPlugin', () => {
   describe('onload', () => {
     it('should load plugin successfully', async () => {
       const consoleSpy = jest.spyOn(console, 'log');
-      
+
       await plugin.onload();
-      
+
       expect(consoleSpy).toHaveBeenCalledWith('Loading Timeline Writer plugin');
-      expect(consoleSpy).toHaveBeenCalledWith('Timeline Writer plugin loaded successfully');
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Timeline Writer plugin loaded successfully'
+      );
     });
 
     it('should register event handlers', async () => {
       await plugin.onload();
-      
-      expect(mockApp.vault.on).toHaveBeenCalledWith('modify', expect.any(Function));
-      expect(mockApp.vault.on).toHaveBeenCalledWith('create', expect.any(Function));
+
+      expect(mockApp.vault.on).toHaveBeenCalledWith(
+        'modify',
+        expect.any(Function)
+      );
+      expect(mockApp.vault.on).toHaveBeenCalledWith(
+        'create',
+        expect.any(Function)
+      );
     });
 
     it('should add commands', async () => {
       plugin.addCommand = jest.fn();
-      
+
       await plugin.onload();
-      
+
       expect(plugin.addCommand).toHaveBeenCalledWith({
         id: 'open-timeline',
         name: 'Open Timeline View',
@@ -58,9 +66,9 @@ describe('TimelineWriterPlugin', () => {
 
     it('should add ribbon icon', async () => {
       plugin.addRibbonIcon = jest.fn();
-      
+
       await plugin.onload();
-      
+
       expect(plugin.addRibbonIcon).toHaveBeenCalledWith(
         'clock',
         'Timeline Writer',
@@ -72,9 +80,9 @@ describe('TimelineWriterPlugin', () => {
   describe('settings', () => {
     it('should load default settings', async () => {
       plugin.loadData = jest.fn().mockResolvedValue({});
-      
+
       await plugin.loadSettings();
-      
+
       expect(plugin.settings.enableAutoDetection).toBe(true);
       expect(plugin.settings.detectionSensitivity).toBe(0.7);
       expect(plugin.settings.snapshotFrequency).toBe('medium');
@@ -86,9 +94,9 @@ describe('TimelineWriterPlugin', () => {
         detectionSensitivity: 0.5,
       };
       plugin.loadData = jest.fn().mockResolvedValue(savedSettings);
-      
+
       await plugin.loadSettings();
-      
+
       expect(plugin.settings.enableAutoDetection).toBe(false);
       expect(plugin.settings.detectionSensitivity).toBe(0.5);
       expect(plugin.settings.snapshotFrequency).toBe('medium'); // Should keep default
@@ -97,9 +105,9 @@ describe('TimelineWriterPlugin', () => {
     it('should save settings', async () => {
       plugin.saveData = jest.fn();
       plugin.settings.enableAutoDetection = false;
-      
+
       await plugin.saveSettings();
-      
+
       expect(plugin.saveData).toHaveBeenCalledWith(plugin.settings);
     });
   });
@@ -143,10 +151,12 @@ describe('TimelineWriterPlugin', () => {
   describe('onunload', () => {
     it('should unload plugin cleanly', async () => {
       const consoleSpy = jest.spyOn(console, 'log');
-      
+
       await plugin.onunload();
-      
-      expect(consoleSpy).toHaveBeenCalledWith('Unloading Timeline Writer plugin');
+
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Unloading Timeline Writer plugin'
+      );
     });
   });
 });

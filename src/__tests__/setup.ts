@@ -15,7 +15,7 @@ global.console = {
 Object.defineProperty(window, 'HTMLElement', {
   value: class MockHTMLElement {
     innerHTML = '';
-    style: any = {};
+    style: Record<string, string> = {};
     setAttribute = jest.fn();
     getAttribute = jest.fn();
     addEventListener = jest.fn();

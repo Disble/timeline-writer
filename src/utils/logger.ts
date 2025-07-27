@@ -5,7 +5,9 @@ export class Logger implements ILogger {
   private logLevel: LogLevel = 'warn';
   private enableDebug = false;
 
-  private constructor() {}
+  private constructor() {
+    // no-code
+  }
 
   static getInstance(): Logger {
     if (!Logger.instance) {
@@ -22,31 +24,31 @@ export class Logger implements ILogger {
     this.enableDebug = enabled;
   }
 
-  debug(message: string, context?: any): void {
+  debug(message: string, context?: unknown): void {
     if (this.shouldLog('debug')) {
       this.log('DEBUG', message, context);
     }
   }
 
-  info(message: string, context?: any): void {
+  info(message: string, context?: unknown): void {
     if (this.shouldLog('info')) {
       this.log('INFO', message, context);
     }
   }
 
-  warn(message: string, context?: any): void {
+  warn(message: string, context?: unknown): void {
     if (this.shouldLog('warn')) {
       this.log('WARN', message, context);
     }
   }
 
-  error(message: string, context?: any): void {
+  error(message: string, context?: unknown): void {
     if (this.shouldLog('error')) {
       this.log('ERROR', message, context);
     }
   }
 
-  critical(message: string, context?: any): void {
+  critical(message: string, context?: unknown): void {
     this.log('CRITICAL', message, context);
   }
 
@@ -62,7 +64,7 @@ export class Logger implements ILogger {
     return levels[level] >= levels[this.logLevel];
   }
 
-  private log(level: string, message: string, context?: any): void {
+  private log(level: string, message: string, context?: unknown): void {
     const timestamp = new Date().toISOString();
     const logMessage = `[${timestamp}] [Timeline Writer] [${level}] ${message}`;
 
