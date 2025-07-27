@@ -1,4 +1,4 @@
-import { Plugin } from 'obsidian';
+import { Notice, Plugin } from 'obsidian';
 import {
   DEFAULT_SETTINGS,
   type TimelineWriterSettings,
@@ -77,7 +77,16 @@ export default class TimelineWriterPlugin extends Plugin {
               filePath: activeFile.path,
               nodeId,
             });
+            // Show success notification
+            new Notice('✅ Manual checkpoint created successfully');
+          } else {
+            // Show error notification for empty files
+            new Notice(
+              '❌ Cannot create checkpoint: File is empty or has insufficient content'
+            );
           }
+        } else {
+          new Notice('❌ No active file to create checkpoint for');
         }
       },
     });
@@ -99,10 +108,18 @@ export default class TimelineWriterPlugin extends Plugin {
       callback: async () => {
         const activeFile = this.app.workspace.getActiveFile();
         if (activeFile) {
-          // TODO: Implement relative navigation back
+          const success = await this.integration.navigateBack(activeFile.path);
+          if (success) {
+            new Notice('✅ Navigated back in timeline');
+          } else {
+            new Notice('❌ No previous version available');
+          }
           this.logger.info('Navigate back command triggered', {
             filePath: activeFile.path,
+            success,
           });
+        } else {
+          new Notice('❌ No active file to navigate');
         }
       },
     });
@@ -115,10 +132,20 @@ export default class TimelineWriterPlugin extends Plugin {
       callback: async () => {
         const activeFile = this.app.workspace.getActiveFile();
         if (activeFile) {
-          // TODO: Implement relative navigation forward
+          const success = await this.integration.navigateForward(
+            activeFile.path
+          );
+          if (success) {
+            new Notice('✅ Navigated forward in timeline');
+          } else {
+            new Notice('❌ No next version available');
+          }
           this.logger.info('Navigate forward command triggered', {
             filePath: activeFile.path,
+            success,
           });
+        } else {
+          new Notice('❌ No active file to navigate');
         }
       },
     });

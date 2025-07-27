@@ -39,11 +39,24 @@ describe('BehavioralAnalyzer', () => {
     const signal = analyzer.analyze(content);
 
     expect(signal.type).toBe('behavioral');
-    expect(signal.confidence).toBe(0.5);
+    expect(signal.confidence).toBe(0.7); // Updated from 0.5 to 0.7
     expect(signal.evidence.changeSize).toBe(content.length);
     expect(signal.weight).toBe(0.75);
     expect(mockLogger.debug).toHaveBeenCalledWith(
-      `Behavioral analysis: change size ${content.length}, confidence 0.5`
+      `Behavioral analysis: change size ${content.length}, confidence 0.7`
+    );
+  });
+
+  it('should return small confidence for small changes', () => {
+    const content = 'A'.repeat(30); // 30 characters
+    const signal = analyzer.analyze(content);
+
+    expect(signal.type).toBe('behavioral');
+    expect(signal.confidence).toBe(0.3); // New threshold for small changes
+    expect(signal.evidence.changeSize).toBe(content.length);
+    expect(signal.weight).toBe(0.75);
+    expect(mockLogger.debug).toHaveBeenCalledWith(
+      `Behavioral analysis: change size ${content.length}, confidence 0.3`
     );
   });
 

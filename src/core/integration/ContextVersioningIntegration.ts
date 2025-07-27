@@ -22,7 +22,7 @@ export class ContextVersioningIntegration {
       oldContent
     );
 
-    if (contextShift.probability > 0.5) {
+    if (contextShift.probability > 0.3) {
       this.logger.info('Context shift detected, creating checkpoint.', {
         filePath,
         probability: contextShift.probability,
@@ -42,6 +42,18 @@ export class ContextVersioningIntegration {
     content: string,
     label: string
   ): Promise<TimelineNode> {
+    // Validate content before creating checkpoint
+    const trimmedContent = content.trim();
+    if (trimmedContent.length === 0) {
+      throw new Error('Cannot create checkpoint for empty file');
+    }
+
+    if (trimmedContent.length < 10) {
+      throw new Error(
+        `File content too small for meaningful checkpoint (${trimmedContent.length} characters)`
+      );
+    }
+
     const snapshot = await this.versionManager.createVersionSnapshot(
       filePath,
       content,

@@ -29,8 +29,9 @@ export class BehavioralAnalyzer {
   }
 
   private calculateConfidence(changeSize: number): number {
-    if (changeSize > 500) return 1.0; // Large edit
-    if (changeSize > 100) return 0.5; // Medium edit
+    if (changeSize > 300) return 1.0; // Large edit - reduced from 500
+    if (changeSize > 50) return 0.7; // Medium edit - increased confidence and reduced threshold
+    if (changeSize > 20) return 0.3; // Small edit - added threshold for minor changes
     return 0;
   }
 }

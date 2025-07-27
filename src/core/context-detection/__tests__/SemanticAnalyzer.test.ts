@@ -28,7 +28,7 @@ describe('SemanticAnalyzer', () => {
     const newContent = 'The quick brown fox leaped over the lazy dog.';
     const signal = analyzer.analyze(newContent, oldContent);
     expect(signal.type).toBe('semantic');
-    expect(signal.confidence).toBeCloseTo(0.2, 1);
+    expect(signal.confidence).toBeCloseTo(0.3, 1); // Updated: 0.2 * 1.5 = 0.3
     expect(signal.evidence.similarity).toBeCloseTo(0.8, 1);
     expect(mockLogger.debug).toHaveBeenCalled();
   });
@@ -38,7 +38,7 @@ describe('SemanticAnalyzer', () => {
     const newContent = 'The moon is a cold, distant rock.';
     const signal = analyzer.analyze(newContent, oldContent);
     expect(signal.type).toBe('semantic');
-    expect(signal.confidence).toBeCloseTo(0.8, 1);
+    expect(signal.confidence).toBeCloseTo(1.0, 1); // Updated: 0.8 * 1.5 = 1.2, capped at 1.0
     expect(signal.evidence.similarity).toBeCloseTo(0.2, 1);
     expect(mockLogger.debug).toHaveBeenCalled();
   });

@@ -385,6 +385,108 @@ export class ObsidianIntegration {
     }
   }
 
+  async navigateBack(filePath: string): Promise<boolean> {
+    try {
+      const file = this.app.vault.getAbstractFileByPath(filePath);
+      if (!(file instanceof TFile)) {
+        return false;
+      }
+
+      const currentPosition =
+        this.navigationEngine.getCurrentPosition(filePath);
+      if (!currentPosition) {
+        this.logger.debug('No current position found for navigation', {
+          filePath,
+        });
+        return false;
+      }
+
+      const currentNode = await this.storageEngine.getNode(currentPosition);
+      if (!currentNode || currentNode.parentIds.length === 0) {
+        this.logger.debug('No parent node available for navigation back', {
+          filePath,
+          currentNodeId: currentPosition,
+        });
+        return false;
+      }
+
+      // Navigate to the first parent (most recent)
+      const parentNodeId = currentNode.parentIds[0];
+      if (!parentNodeId) {
+        this.logger.debug('Parent node ID is undefined', {
+          filePath,
+          currentNodeId: currentPosition,
+        });
+        return false;
+      }
+      const success = await this.navigateToVersion(filePath, parentNodeId);
+
+      if (success) {
+        this.logger.info('Navigated back successfully', {
+          filePath,
+          fromNodeId: currentPosition,
+          toNodeId: parentNodeId,
+        });
+      }
+
+      return success;
+    } catch (error) {
+      this.logger.error('Navigate back failed', error);
+      return false;
+    }
+  }
+
+  async navigateForward(filePath: string): Promise<boolean> {
+    try {
+      const file = this.app.vault.getAbstractFileByPath(filePath);
+      if (!(file instanceof TFile)) {
+        return false;
+      }
+
+      const currentPosition =
+        this.navigationEngine.getCurrentPosition(filePath);
+      if (!currentPosition) {
+        this.logger.debug('No current position found for navigation', {
+          filePath,
+        });
+        return false;
+      }
+
+      const currentNode = await this.storageEngine.getNode(currentPosition);
+      if (!currentNode || currentNode.childIds.length === 0) {
+        this.logger.debug('No child node available for navigation forward', {
+          filePath,
+          currentNodeId: currentPosition,
+        });
+        return false;
+      }
+
+      // Navigate to the first child (most recent)
+      const childNodeId = currentNode.childIds[0];
+      if (!childNodeId) {
+        this.logger.debug('Child node ID is undefined', {
+          filePath,
+          currentNodeId: currentPosition,
+        });
+        return false;
+      }
+      const success = await this.navigateToVersion(filePath, childNodeId);
+
+      if (success) {
+        this.logger.info('Navigated forward successfully', {
+          filePath,
+          fromNodeId: currentPosition,
+          toNodeId: childNodeId,
+        });
+      }
+
+      return success;
+    } catch (error) {
+      this.logger.error('Navigate forward failed', error);
+      return false;
+    }
+  }
+
   async createManualCheckpoint(
     filePath: string,
     label: string
@@ -396,6 +498,25 @@ export class ObsidianIntegration {
       }
 
       const content = await this.app.vault.read(file);
+
+      // Validate that the file has meaningful content
+      const trimmedContent = content.trim();
+      if (trimmedContent.length === 0) {
+        this.logger.warn('Cannot create checkpoint for empty file', {
+          filePath,
+        });
+        return null;
+      }
+
+      // Check for minimum meaningful content (at least 10 characters)
+      if (trimmedContent.length < 10) {
+        this.logger.warn('File content too small for meaningful checkpoint', {
+          filePath,
+          contentLength: trimmedContent.length,
+        });
+        return null;
+      }
+
       const node = await this.contextVersioning.createManualCheckpoint(
         filePath,
         content,
@@ -406,6 +527,7 @@ export class ObsidianIntegration {
         filePath,
         nodeId: node.id,
         label,
+        contentLength: content.length,
       });
 
       return node.id;

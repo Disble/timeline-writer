@@ -12,9 +12,13 @@ export class SemanticAnalyzer {
     const similarity = this.calculateSimilarity(newContent, oldContent);
     this.logger.debug(`Semantic similarity: ${similarity}`);
 
+    // For fiction writing, even small changes can be significant
+    // Adjust confidence to be more sensitive to changes
+    const confidence = Math.max(0, (1 - similarity) * 1.5); // Boost sensitivity
+
     return {
       type: 'semantic',
-      confidence: 1 - similarity,
+      confidence: Math.min(confidence, 1.0), // Cap at 1.0
       evidence: {
         similarity,
       },
