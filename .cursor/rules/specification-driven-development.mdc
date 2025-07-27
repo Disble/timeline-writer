@@ -1,0 +1,62 @@
+---
+alwaysApply: true
+description: Specification-driven development workflow for Timeline Writer project
+---
+
+# Specification-Driven Development
+
+## Critical Pre-Development Workflow
+
+**BEFORE writing any code, ALWAYS follow this sequence:**
+
+### 1. Check Current Development Phase
+- Read [specs/phases/index.md](mdc:specs/phases/index.md) to understand current phase
+- Review the specific phase documentation in `specs/phases/fase-X-*.md`
+- Understand phase objectives and deliverables
+
+### 2. Review Architecture Specifications
+For core system development, consult:
+- [specs/architecture/index.md](mdc:specs/architecture/index.md) for system overview
+- [specs/architecture/data-models.md](mdc:specs/architecture/data-models.md) for data structures
+- [specs/architecture/storage-engine.md](mdc:specs/architecture/storage-engine.md) for storage patterns
+- [specs/architecture/context-detection.md](mdc:specs/architecture/context-detection.md) for context algorithms
+- [specs/architecture/timeline-engine.md](mdc:specs/architecture/timeline-engine.md) for timeline logic
+
+### 3. Check Component Specifications
+For UI development, review:
+- [specs/components/index.md](mdc:specs/components/index.md) for component overview
+- [specs/components/timeline-view.md](mdc:specs/components/timeline-view.md) for timeline visualization
+- [specs/components/comparison-view.md](mdc:specs/components/comparison-view.md) for version comparison
+- [specs/components/settings-panel.md](mdc:specs/components/settings-panel.md) for settings interface
+
+### 4. Align with Phase Objectives
+- Ensure implementation matches current phase goals
+- Follow the defined architecture patterns
+- Use specified data models and interfaces
+- Implement according to component specifications
+
+### 5. Update Specifications if Needed
+- If you discover gaps in specifications, update them first
+- Maintain consistency between code and documentation
+- Keep specs as the single source of truth
+
+## Development Phases Reference
+
+Currently in **Phase 1: Setup and Foundation** (completed)
+Next: **Phase 2: Data Layer** - Storage engine, data models, compression system
+
+## Architecture Compliance
+
+- All code must follow the architectural patterns defined in specs
+- Data models must match the interfaces in [src/data/models/core.ts](mdc:src/data/models/core.ts)
+- Storage implementations must follow [src/data/storage/IStorageEngine.ts](mdc:src/data/storage/IStorageEngine.ts)
+- UI components must align with component specifications
+
+## Quality Gates
+
+Before committing any code:
+- [ ] Relevant specifications have been read and understood
+- [ ] Implementation aligns with current phase objectives
+- [ ] Architecture patterns are followed
+- [ ] Component specifications are respected
+- [ ] No deviations from specified design without documentation

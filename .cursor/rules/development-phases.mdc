@@ -1,0 +1,79 @@
+---
+alwaysApply: true
+description: Development phases tracking and phase-specific guidelines for Timeline Writer
+---
+
+# Development Phases Guide
+
+## Current Phase Status
+
+**Phase 1: Setup and Foundation** ✅ **COMPLETED**
+- Project structure and configuration
+- TypeScript setup with strict rules
+- Build system with esbuild
+- Testing framework with Jest
+- Basic plugin structure
+
+**Phase 2: Data Layer** 🔄 **IN PROGRESS**
+- Storage engine implementation
+- Data models and interfaces
+- Compression system
+- Migration framework
+
+## Phase-Specific Guidelines
+
+### Phase 2: Data Layer Requirements
+When working on Phase 2, focus on:
+- Read [specs/phases/fase-2-data-layer.md](mdc:specs/phases/fase-2-data-layer.md)
+- Implement storage engine following [specs/architecture/storage-engine.md](mdc:specs/architecture/storage-engine.md)
+- Use data models from [src/data/models/core.ts](mdc:src/data/models/core.ts)
+- Follow storage patterns in [src/data/storage/IStorageEngine.ts](mdc:src/data/storage/IStorageEngine.ts)
+
+### Phase 3: Context Detection (Next)
+- Read [specs/phases/fase-3-context-detection.md](mdc:specs/phases/fase-3-context-detection.md)
+- Follow [specs/architecture/context-detection.md](mdc:specs/architecture/context-detection.md)
+- Implement in [src/core/context-detection/](mdc:src/core/context-detection/)
+
+### Phase 4: Version Management
+- Read [specs/phases/fase-4-version-management.md](mdc:specs/phases/fase-4-version-management.md)
+- Follow [specs/architecture/timeline-engine.md](mdc:specs/architecture/timeline-engine.md)
+- Implement in [src/core/version-manager/](mdc:src/core/version-manager/)
+
+### Phase 5: User Interface
+- Read [specs/phases/fase-5-user-interface.md](mdc:specs/phases/fase-5-user-interface.md)
+- Follow component specs in [specs/components/](mdc:specs/components/)
+- Implement in [src/ui/](mdc:src/ui/)
+
+### Phase 6: Testing and Optimization
+- Read [specs/phases/fase-6-testing.md](mdc:specs/phases/fase-6-testing.md)
+- Focus on test coverage and performance optimization
+
+## Phase Dependencies
+
+```mermaid
+graph TD
+    A[Phase 1: Setup] --> B[Phase 2: Data Layer]
+    B --> C[Phase 3: Context Detection]
+    B --> D[Phase 4: Version Management]
+    C --> E[Phase 5: User Interface]
+    D --> E
+    E --> F[Phase 6: Testing]
+```
+
+## Phase Completion Criteria
+
+Each phase must meet:
+- [ ] All deliverables implemented
+- [ ] Unit tests with >80% coverage
+- [ ] Technical documentation updated
+- [ ] Code review completed
+- [ ] Performance benchmarks met
+
+## Phase Transition Checklist
+
+Before moving to next phase:
+- [ ] Current phase objectives completed
+- [ ] All tests passing
+- [ ] Documentation updated
+- [ ] Performance validated
+- [ ] Next phase specs reviewed
