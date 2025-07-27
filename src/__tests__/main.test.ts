@@ -2,6 +2,24 @@ import TimelineWriterPlugin from '../main';
 import { createMockApp } from './setup';
 import { App } from 'obsidian';
 
+// Mock the ObsidianIntegration to avoid complex setup
+jest.mock('../integration/ObsidianIntegration', () => {
+  return {
+    ObsidianIntegration: jest.fn().mockImplementation(() => ({
+      initialize: jest.fn().mockResolvedValue(undefined),
+      cleanup: jest.fn().mockResolvedValue(undefined),
+      createManualCheckpoint: jest.fn().mockResolvedValue('checkpoint-123'),
+      getTimelineForFile: jest
+        .fn()
+        .mockResolvedValue({ timeline: { versions: [] }, statistics: {} }),
+      getStatistics: jest
+        .fn()
+        .mockResolvedValue({ filesTracked: 0, totalSnapshots: 0 }),
+      updateConfig: jest.fn(),
+    })),
+  };
+});
+
 describe('TimelineWriterPlugin', () => {
   let plugin: TimelineWriterPlugin;
   let mockApp: App;
@@ -16,6 +34,14 @@ describe('TimelineWriterPlugin', () => {
       description: 'Test plugin',
       author: 'Test',
     });
+
+    // Mock plugin methods
+    plugin.addCommand = jest.fn();
+    plugin.addRibbonIcon = jest.fn();
+    plugin.addSettingTab = jest.fn();
+    plugin.loadData = jest.fn().mockResolvedValue({});
+    plugin.saveData = jest.fn();
+    plugin.registerInterval = jest.fn();
 
     // Set logger to info level so we can test info messages
     plugin['logger'].setLogLevel('info');
@@ -45,32 +71,21 @@ describe('TimelineWriterPlugin', () => {
       await plugin.onload();
 
       expect(plugin.addCommand).toHaveBeenCalledWith({
-        id: 'open-timeline',
-        name: 'Open Timeline View',
-        callback: expect.any(Function),
-      });
-
-      expect(plugin.addCommand).toHaveBeenCalledWith({
         id: 'create-checkpoint',
         name: 'Create Manual Checkpoint',
         callback: expect.any(Function),
       });
-    });
-
-    it('should add commands', async () => {
-      plugin.addCommand = jest.fn();
-
-      await plugin.onload();
 
       expect(plugin.addCommand).toHaveBeenCalledWith({
-        id: 'open-timeline',
-        name: 'Open Timeline View',
+        id: 'show-timeline',
+        name: 'Show Timeline for Current File',
         callback: expect.any(Function),
       });
 
       expect(plugin.addCommand).toHaveBeenCalledWith({
-        id: 'create-checkpoint',
-        name: 'Create Manual Checkpoint',
+        id: 'navigate-back',
+        name: 'Navigate Back in Timeline',
+        hotkeys: [{ modifiers: ['Ctrl', 'Alt'], key: 'ArrowLeft' }],
         callback: expect.any(Function),
       });
     });

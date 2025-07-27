@@ -356,6 +356,10 @@ export class StorageEngine {
     return null;
   }
 
+  async saveSnapshotObject(snapshot: VersionSnapshot): Promise<void> {
+    return this.saveSnapshotById(snapshot);
+  }
+
   async saveSnapshotById(snapshot: VersionSnapshot): Promise<void> {
     await this.dbManager.saveVersionSnapshot(snapshot);
   }

@@ -74,7 +74,7 @@ export class VersionManager implements IVersionManager {
       };
     }
 
-    await this.storage.saveSnapshot(newSnapshot);
+    await this.storage.saveSnapshotObject(newSnapshot);
     return newSnapshot;
   }
 
