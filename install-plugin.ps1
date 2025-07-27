@@ -45,7 +45,7 @@ if (-not (Test-Path $distPath)) {
     exit 1
 }
 
-$filesToCopy = @("main.js", "manifest.json")
+$filesToCopy = @("main.js", "manifest.json", "sql-wasm.wasm")
 foreach ($file in $filesToCopy) {
     $sourceFile = Join-Path $distPath $file
     if (Test-Path $sourceFile) {
