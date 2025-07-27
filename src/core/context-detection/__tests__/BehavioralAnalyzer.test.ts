@@ -62,30 +62,35 @@ describe('BehavioralAnalyzer', () => {
 
   it('should track content length changes between calls', () => {
     const firstContent = 'Short content';
-    const secondContent = 'Much longer content that should trigger medium confidence';
-    
+    const secondContent =
+      'Much longer content that should trigger medium confidence';
+
     // First call - initial content
     const firstSignal = analyzer.analyze(firstContent);
     expect(firstSignal.evidence.changeSize).toBe(firstContent.length);
-    
+
     // Second call - should calculate difference
     const secondSignal = analyzer.analyze(secondContent);
-    const expectedChangeSize = Math.abs(secondContent.length - firstContent.length);
+    const expectedChangeSize = Math.abs(
+      secondContent.length - firstContent.length
+    );
     expect(secondSignal.evidence.changeSize).toBe(expectedChangeSize);
   });
 
   it('should handle decreasing content length', () => {
     const longContent = 'A'.repeat(600);
     const shortContent = 'Short';
-    
+
     // First call with long content
     analyzer.analyze(longContent);
-    
+
     // Second call with short content - should detect large decrease
     const signal = analyzer.analyze(shortContent);
-    const expectedChangeSize = Math.abs(shortContent.length - longContent.length);
-    
+    const expectedChangeSize = Math.abs(
+      shortContent.length - longContent.length
+    );
+
     expect(signal.evidence.changeSize).toBe(expectedChangeSize);
     expect(signal.confidence).toBe(1.0); // Large change
   });
-}); 
+});

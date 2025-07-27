@@ -29,7 +29,9 @@ describe('TemporalAnalyzer', () => {
     expect(signal.evidence.idleTime).toBeGreaterThanOrEqual(0);
     expect(signal.weight).toBe(0.5);
     expect(mockLogger.debug).toHaveBeenCalledWith(
-      expect.stringMatching(/Temporal analysis: idle time \d+\.?\d*s, confidence 0/)
+      expect.stringMatching(
+        /Temporal analysis: idle time \d+\.?\d*s, confidence 0/
+      )
     );
   });
 
@@ -46,7 +48,9 @@ describe('TemporalAnalyzer', () => {
     expect(signal.evidence.idleTime).toBeCloseTo(90, 0);
     expect(signal.weight).toBe(0.5);
     expect(mockLogger.debug).toHaveBeenCalledWith(
-      expect.stringMatching(/Temporal analysis: idle time \d+\.?\d*s, confidence 0\.5/)
+      expect.stringMatching(
+        /Temporal analysis: idle time \d+\.?\d*s, confidence 0\.5/
+      )
     );
   });
 
@@ -63,29 +67,31 @@ describe('TemporalAnalyzer', () => {
     expect(signal.evidence.idleTime).toBeCloseTo(360, 0);
     expect(signal.weight).toBe(0.5);
     expect(mockLogger.debug).toHaveBeenCalledWith(
-      expect.stringMatching(/Temporal analysis: idle time \d+\.?\d*s, confidence 1/)
+      expect.stringMatching(
+        /Temporal analysis: idle time \d+\.?\d*s, confidence 1/
+      )
     );
   });
 
   it('should update lastActivity after analysis', () => {
     const initialTime = (analyzer as any).lastActivity.getTime();
-    
+
     // Wait a bit to ensure time difference
     const startTime = Date.now();
     while (Date.now() - startTime < 10) {
       // Small delay
     }
-    
+
     analyzer.analyze();
     const updatedTime = (analyzer as any).lastActivity.getTime();
-    
+
     expect(updatedTime).toBeGreaterThan(initialTime);
   });
 
   it('should handle multiple consecutive calls', () => {
     const firstSignal = analyzer.analyze();
     expect(firstSignal.evidence.idleTime).toBeGreaterThanOrEqual(0);
-    
+
     // Second call should have very small idle time
     const secondSignal = analyzer.analyze();
     expect(secondSignal.evidence.idleTime).toBeLessThan(1); // Should be very small
@@ -98,7 +104,7 @@ describe('TemporalAnalyzer', () => {
     (analyzerWithIdle as any).lastActivity = pastTime;
 
     const signal = analyzerWithIdle.analyze();
-    
+
     expect(signal.evidence.idleTime).toBeCloseTo(2, 0);
   });
-}); 
+});

@@ -77,7 +77,7 @@ describe('VersionManager', () => {
   it('should create a new snapshot with full content when no parent exists', async () => {
     // Mock no parent snapshot
     mockStorage.getSnapshots.mockResolvedValue([]);
-    
+
     const snapshot = await manager.createVersionSnapshot(
       'test.md',
       'new content',
