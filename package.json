@@ -10,11 +10,17 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
+    "lint": "biome lint src",
+    "lint:fix": "biome lint src --write",
+    "format": "biome format src",
+    "format:fix": "biome format src --write",
+    "check": "biome check src",
+    "check:fix": "biome check src --write",
     "type-check": "tsc --noEmit",
     "clean": "rimraf dist",
-    "validate": "npm run type-check && npm run build && npm test",
+    "validate": "npm run type-check && npm run check && npm run build && npm test",
     "prepare": "husky",
-    "pre-commit": "npm run type-check && npm run build && npm test"
+    "pre-commit": "npm run type-check && npm run check && npm run build && npm test"
   },
   "keywords": [
     "obsidian",
@@ -28,6 +34,7 @@
   "author": "Timeline Writer Team",
   "license": "MIT",
   "devDependencies": {
+    "@biomejs/biome": "^2.1.2",
     "@types/diff-match-patch": "^1.0.5",
     "@types/jest": "^29.5.5",
     "@types/node": "^20.6.3",
