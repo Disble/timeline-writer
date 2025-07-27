@@ -254,8 +254,11 @@ export class ContextDetectionEngine {
     if (signal.evidence && typeof signal.evidence === 'object') {
       const suggestedContext = signal.evidence.suggestedContext;
       const contextId = signal.evidence.contextId;
-      return (typeof suggestedContext === 'string' ? suggestedContext : 
-              typeof contextId === 'string' ? contextId : null);
+      return typeof suggestedContext === 'string'
+        ? suggestedContext
+        : typeof contextId === 'string'
+          ? contextId
+          : null;
     }
     return null;
   }

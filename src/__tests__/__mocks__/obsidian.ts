@@ -46,13 +46,27 @@ export class TFolder extends TAbstractFile {
 
 export class Setting {
   constructor(_containerEl: unknown) {}
-  setName() { return this; }
-  setDesc() { return this; }
-  addText() { return this; }
-  addToggle() { return this; }
-  addSlider() { return this; }
-  addDropdown() { return this; }
-  addButton() { return this; }
+  setName() {
+    return this;
+  }
+  setDesc() {
+    return this;
+  }
+  addText() {
+    return this;
+  }
+  addToggle() {
+    return this;
+  }
+  addSlider() {
+    return this;
+  }
+  addDropdown() {
+    return this;
+  }
+  addButton() {
+    return this;
+  }
 }
 
 export class PluginSettingTab {
@@ -90,7 +104,9 @@ export class SuggestModal {
     this.app = app;
   }
 
-  getSuggestions() { return []; }
+  getSuggestions() {
+    return [];
+  }
   renderSuggestion() {}
   onChooseItem() {}
 }
@@ -103,7 +119,9 @@ export class WorkspaceLeaf {
   }
 
   openFile() {}
-  getViewState() { return {}; }
+  getViewState() {
+    return {};
+  }
   setViewState() {}
 }
 
@@ -114,7 +132,9 @@ export class Workspace {
     this.workspace = this;
   }
 
-  getActiveFile() { return null; }
+  getActiveFile() {
+    return null;
+  }
   openLinkText() {}
   onLayoutReady() {}
   onLayoutChange() {}
@@ -129,13 +149,27 @@ export class Workspace {
 export class Vault {
   constructor() {}
 
-  read() { return Promise.resolve(''); }
-  write() { return Promise.resolve(); }
-  create() { return Promise.resolve(); }
-  delete() { return Promise.resolve(); }
-  rename() { return Promise.resolve(); }
-  getFiles() { return []; }
-  getAbstractFileByPath() { return null; }
+  read() {
+    return Promise.resolve('');
+  }
+  write() {
+    return Promise.resolve();
+  }
+  create() {
+    return Promise.resolve();
+  }
+  delete() {
+    return Promise.resolve();
+  }
+  rename() {
+    return Promise.resolve();
+  }
+  getFiles() {
+    return [];
+  }
+  getAbstractFileByPath() {
+    return null;
+  }
   on() {}
   off() {}
 }
@@ -143,7 +177,9 @@ export class Vault {
 export class MetadataCache {
   constructor() {}
 
-  getFileCache() { return null; }
+  getFileCache() {
+    return null;
+  }
   on() {}
   off() {}
 }
@@ -170,4 +206,4 @@ export class App {
     this.dom = {};
     this.internalPlugins = {};
   }
-} 
+}

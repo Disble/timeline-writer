@@ -1,4 +1,9 @@
-import { FileVersionHistory, TimelineBranch, TimelineNode, VersionSnapshot } from '../models/core';
+import {
+  FileVersionHistory,
+  TimelineBranch,
+  TimelineNode,
+  VersionSnapshot,
+} from '../models/core';
 
 export interface IStorageEngine {
   // Timeline Node operations
@@ -28,4 +33,4 @@ export interface IStorageEngine {
   // Utility
   initialize(): Promise<void>;
   close(): Promise<void>;
-} 
+}

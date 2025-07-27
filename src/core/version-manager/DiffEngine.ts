@@ -25,4 +25,4 @@ export class DiffEngine {
     const patchedContent = this.applyDiff(content, diff);
     return patchedContent === expected;
   }
-} 
+}

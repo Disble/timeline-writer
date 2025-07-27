@@ -15,7 +15,10 @@ export class CompressionEngine {
     throw new Error(`Unsupported compression algorithm: ${algorithm}`);
   }
 
-  decompress(data: Uint8Array, algorithm: CompressionAlgorithm = 'gzip'): string {
+  decompress(
+    data: Uint8Array,
+    algorithm: CompressionAlgorithm = 'gzip'
+  ): string {
     if (algorithm === 'none') {
       return new TextDecoder().decode(data);
     }
@@ -26,4 +29,4 @@ export class CompressionEngine {
 
     throw new Error(`Unsupported decompression algorithm: ${algorithm}`);
   }
-} 
+}

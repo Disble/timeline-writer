@@ -1,10 +1,23 @@
 import { randomUUID } from 'crypto';
-import { FileVersionHistory, NodeMetadata, TimelineBranch, TimelineNode } from '../../data/models/core';
+import {
+  FileVersionHistory,
+  NodeMetadata,
+  TimelineBranch,
+  TimelineNode,
+} from '../../data/models/core';
 import { IStorageEngine } from '../../data/storage/IStorageEngine';
 
 export interface ITimelineEngine {
-  createNode(fileId: string, label: string, isCheckpoint: boolean): Promise<TimelineNode>;
-  createBranch(fileId: string, name: string, parentNodeId: string): Promise<TimelineBranch>;
+  createNode(
+    fileId: string,
+    label: string,
+    isCheckpoint: boolean
+  ): Promise<TimelineNode>;
+  createBranch(
+    fileId: string,
+    name: string,
+    parentNodeId: string
+  ): Promise<TimelineBranch>;
   getTimeline(fileId: string): Promise<FileVersionHistory | null>;
   getNode(nodeId: string): Promise<TimelineNode | null>;
   getBranch(branchId: string): Promise<TimelineBranch | null>;
@@ -14,9 +27,15 @@ export interface ITimelineEngine {
 export class TimelineEngine implements ITimelineEngine {
   constructor(private storage: IStorageEngine) {}
 
-  async createNode(fileId: string, label: string, isCheckpoint: boolean): Promise<TimelineNode> {
+  async createNode(
+    fileId: string,
+    label: string,
+    isCheckpoint: boolean
+  ): Promise<TimelineNode> {
     const history = await this.storage.getFileHistory(fileId);
-    const parentNode = history?.currentVersion ? await this.storage.getNode(history.currentVersion) : null;
+    const parentNode = history?.currentVersion
+      ? await this.storage.getNode(history.currentVersion)
+      : null;
 
     const dummyMetadata: NodeMetadata = {
       fileId,
@@ -70,7 +89,11 @@ export class TimelineEngine implements ITimelineEngine {
     return newNode;
   }
 
-  async createBranch(fileId: string, name: string, parentNodeId: string): Promise<TimelineBranch> {
+  async createBranch(
+    fileId: string,
+    name: string,
+    parentNodeId: string
+  ): Promise<TimelineBranch> {
     const parentNode = await this.storage.getNode(parentNodeId);
     if (!parentNode) {
       throw new Error(`Parent node with id ${parentNodeId} not found`);
@@ -141,4 +164,4 @@ export class TimelineEngine implements ITimelineEngine {
 
     return true;
   }
-} 
+}

@@ -76,10 +76,7 @@ export class KeywordMatcher {
           continue;
         }
 
-        const score = this.calculateContextScore(
-          matches,
-          content.length
-        );
+        const score = this.calculateContextScore(matches, content.length);
 
         if (score > 0.2) {
           // Minimum threshold for keyword confidence

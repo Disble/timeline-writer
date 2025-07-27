@@ -16,7 +16,9 @@ export class MigrationManager {
 
   public async runMigrations(): Promise<void> {
     const currentVersion = await this.getCurrentDbVersion();
-    const sortedMigrations = this.migrations.sort((a, b) => a.version - b.version);
+    const sortedMigrations = this.migrations.sort(
+      (a, b) => a.version - b.version
+    );
 
     for (const migration of sortedMigrations) {
       if (migration.version > currentVersion) {
@@ -37,4 +39,4 @@ export class MigrationManager {
     // This is a placeholder.
     await this.storage.set('db_version', version.toString());
   }
-} 
+}

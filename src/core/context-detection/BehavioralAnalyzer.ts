@@ -320,7 +320,10 @@ export class BehavioralAnalyzer {
     };
 
     this.behaviorHistory.forEach(metrics => {
-      if (metrics.editType && editTypeDistribution[metrics.editType] !== undefined) {
+      if (
+        metrics.editType &&
+        editTypeDistribution[metrics.editType] !== undefined
+      ) {
         const currentValue = editTypeDistribution[metrics.editType];
         if (currentValue !== undefined) {
           editTypeDistribution[metrics.editType] = currentValue + 1;

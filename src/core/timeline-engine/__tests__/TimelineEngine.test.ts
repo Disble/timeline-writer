@@ -105,4 +105,4 @@ describe('TimelineEngine', () => {
       expect(storage.getFileHistory).toHaveBeenCalledWith(fileId);
     });
   });
-}); 
+});

@@ -3,7 +3,10 @@ import { IStorageEngine } from '../../data/storage/IStorageEngine';
 
 export interface IMetadataEngine {
   getMetadata(nodeId: string): Promise<NodeMetadata | null>;
-  updateMetadata(nodeId: string, metadata: Partial<NodeMetadata>): Promise<boolean>;
+  updateMetadata(
+    nodeId: string,
+    metadata: Partial<NodeMetadata>
+  ): Promise<boolean>;
 }
 
 export class MetadataEngine implements IMetadataEngine {
@@ -14,7 +17,10 @@ export class MetadataEngine implements IMetadataEngine {
     return node?.metadata || null;
   }
 
-  async updateMetadata(nodeId: string, metadataUpdate: Partial<NodeMetadata>): Promise<boolean> {
+  async updateMetadata(
+    nodeId: string,
+    metadataUpdate: Partial<NodeMetadata>
+  ): Promise<boolean> {
     const node = await this.storage.getNode(nodeId);
     if (!node) {
       return false;
@@ -24,4 +30,4 @@ export class MetadataEngine implements IMetadataEngine {
     await this.storage.saveNode(node);
     return true;
   }
-} 
+}

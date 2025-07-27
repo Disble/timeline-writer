@@ -230,7 +230,8 @@ export class TemporalAnalyzer {
     // Check if this is the start of a new session after a significant break
     if (currentSession && currentSession.operations.length === 1) {
       const breakDuration =
-        currentSession.startTime.getTime() - (previousSession?.endTime.getTime() || 0);
+        currentSession.startTime.getTime() -
+        (previousSession?.endTime.getTime() || 0);
       const avgBreakDuration = this.calculateAverageBreakDuration();
 
       if (breakDuration > avgBreakDuration * 2) {

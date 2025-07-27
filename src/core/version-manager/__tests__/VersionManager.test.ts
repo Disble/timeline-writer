@@ -1,7 +1,11 @@
 import { VersionManager } from '../VersionManager';
 import { IStorageEngine } from '../../../data/storage/IStorageEngine';
 import { mock, MockProxy } from 'jest-mock-extended';
-import { FileVersionHistory, TimelineNode, VersionSnapshot } from '../../../data/models/core';
+import {
+  FileVersionHistory,
+  TimelineNode,
+  VersionSnapshot,
+} from '../../../data/models/core';
 
 describe('VersionManager', () => {
   let storage: MockProxy<IStorageEngine>;
@@ -35,10 +39,15 @@ describe('VersionManager', () => {
       const fileId = 'test-file';
       const oldContent = 'Hello, world!';
       const newContent = 'Hello, beautiful world!';
-      const parentNode = { id: 'node1', metadata: { contentHash: 'hash1' } } as TimelineNode;
+      const parentNode = {
+        id: 'node1',
+        metadata: { contentHash: 'hash1' },
+      } as TimelineNode;
       const parentSnapshot = { fullContent: oldContent } as VersionSnapshot;
 
-      storage.getFileHistory.mockResolvedValue({ currentVersion: 'node1' } as FileVersionHistory);
+      storage.getFileHistory.mockResolvedValue({
+        currentVersion: 'node1',
+      } as FileVersionHistory);
       storage.getNode.mockResolvedValue(parentNode);
       storage.getSnapshots.mockResolvedValue([parentSnapshot]);
 
@@ -51,4 +60,4 @@ describe('VersionManager', () => {
       expect(storage.saveSnapshot).toHaveBeenCalledWith(snapshot);
     });
   });
-}); 
+});

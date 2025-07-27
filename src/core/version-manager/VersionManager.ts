@@ -5,7 +5,10 @@ import { DiffEngine } from './DiffEngine';
 import { CompressionEngine } from './CompressionEngine';
 
 export interface IVersionManager {
-  createVersionSnapshot(fileId: string, content: string): Promise<VersionSnapshot>;
+  createVersionSnapshot(
+    fileId: string,
+    content: string
+  ): Promise<VersionSnapshot>;
   getVersionSnapshot(snapshotId: string): Promise<VersionSnapshot | null>;
   restoreVersion(snapshotId: string): Promise<string | null>;
 }
@@ -19,10 +22,15 @@ export class VersionManager implements IVersionManager {
     this.compressionEngine = new CompressionEngine();
   }
 
-  async createVersionSnapshot(fileId: string, content: string): Promise<VersionSnapshot> {
+  async createVersionSnapshot(
+    fileId: string,
+    content: string
+  ): Promise<VersionSnapshot> {
     const history = await this.storage.getFileHistory(fileId);
-    const parentNode = history?.currentVersion ? await this.storage.getNode(history.currentVersion) : null;
-    
+    const parentNode = history?.currentVersion
+      ? await this.storage.getNode(history.currentVersion)
+      : null;
+
     let parentSnapshot: VersionSnapshot | null = null;
     if (parentNode) {
       const parentSnapshots = await this.storage.getSnapshots(parentNode.id);
@@ -70,7 +78,9 @@ export class VersionManager implements IVersionManager {
     return newSnapshot;
   }
 
-  async getVersionSnapshot(snapshotId: string): Promise<VersionSnapshot | null> {
+  async getVersionSnapshot(
+    snapshotId: string
+  ): Promise<VersionSnapshot | null> {
     return this.storage.getSnapshot(snapshotId);
   }
 
@@ -96,7 +106,7 @@ export class VersionManager implements IVersionManager {
       if (parentSnapshot?.fullContent) {
         const decompressedDiffString = this.compressionEngine.decompress(
           snapshot.diffFromParent.data,
-          snapshot.diffFromParent.algorithm,
+          snapshot.diffFromParent.algorithm
         );
         const diff = JSON.parse(decompressedDiffString);
         return this.diffEngine.applyDiff(parentSnapshot.fullContent, diff);
@@ -105,4 +115,4 @@ export class VersionManager implements IVersionManager {
 
     return null; // Cannot restore if no full content and no valid parent diff
   }
-} 
+}

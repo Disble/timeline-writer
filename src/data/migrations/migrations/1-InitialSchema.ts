@@ -11,4 +11,4 @@ export class InitialSchema implements IMigration {
     // so this migration is a starting point for future changes.
     // Example: await storage.query('CREATE TABLE ...');
   }
-} 
+}
