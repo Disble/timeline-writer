@@ -45,11 +45,19 @@
 			"linter": {
 				"rules": {
 					"suspicious": {
-						"noExplicitAny": "off"
+						"noExplicitAny": "off",
+						"noConsole": "off"
 					},
 					"complexity": {
 						"noUselessConstructor": "off",
 						"useLiteralKeys": "off"
+					},
+					"style": {
+						"useTemplate": "off",
+						"useConst": "off"
+					},
+					"correctness": {
+						"noUnusedVariables": "off"
 					}
 				}
 			}

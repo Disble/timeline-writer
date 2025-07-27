@@ -318,6 +318,23 @@ export class StorageEngine {
     this.logger.info('Storage cleanup completed', { retentionDays });
   }
 
+  async renameFilePath(oldPath: string, newPath: string): Promise<void> {
+    this.logger.debug(`Renaming file path from ${oldPath} to ${newPath}`);
+    // This needs to be implemented in DatabaseManager
+  }
+
+  async getSnapshotsCount(): Promise<number> {
+    this.logger.debug('Getting snapshots count');
+    // This needs to be implemented in DatabaseManager
+    return 0;
+  }
+
+  async getNodesCount(): Promise<number> {
+    this.logger.debug('Getting nodes count');
+    // This needs to be implemented in DatabaseManager
+    return 0;
+  }
+
   // IStorageEngine interface methods
   async getNode(nodeId: string): Promise<TimelineNode | null> {
     return this.dbManager.getTimelineNode(nodeId);

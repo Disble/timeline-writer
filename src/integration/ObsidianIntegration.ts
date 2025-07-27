@@ -1,8 +1,16 @@
-import { type App, type Plugin, TFile } from 'obsidian';
+import {
+  type App,
+  debounce,
+  type Plugin,
+  type TAbstractFile,
+  TFile,
+} from 'obsidian';
 import { ContextDetectionEngine } from '../core/context-detection/ContextDetectionEngine';
 import { ContextVersioningIntegration } from '../core/integration/ContextVersioningIntegration';
 import { NavigationEngine } from '../core/timeline-engine/NavigationEngine';
 import { TimelineEngine } from '../core/timeline-engine/TimelineEngine';
+import { CompressionEngine } from '../core/version-manager/CompressionEngine';
+import { DiffEngine } from '../core/version-manager/DiffEngine';
 import { VersionManager } from '../core/version-manager/VersionManager';
 import { DatabaseManager } from '../data/storage/DatabaseManager';
 import { StorageEngine } from '../data/storage/StorageEngine';
@@ -103,9 +111,17 @@ export class ObsidianIntegration {
     this.storageEngine = new StorageEngine(this.dbManager, this.logger);
     await this.storageEngine.initialize();
 
+    const compressionEngine = new CompressionEngine();
+    const diffEngine = new DiffEngine();
+
     // Initialize core engines
-    this.versionManager = new VersionManager(this.storageEngine);
-    this.timelineEngine = new TimelineEngine(this.storageEngine);
+    this.versionManager = new VersionManager(
+      this.storageEngine,
+      diffEngine,
+      compressionEngine,
+      this.logger
+    );
+    this.timelineEngine = new TimelineEngine(this.storageEngine, this.logger);
     this.navigationEngine = new NavigationEngine(
       this.storageEngine,
       this.logger
@@ -113,12 +129,13 @@ export class ObsidianIntegration {
 
     // Initialize context detection
     this.contextDetection = new ContextDetectionEngine(this.logger);
-    await this.contextDetection.initialize([]); // Start with empty contexts
+    this.contextDetection.initialize([]); // Start with empty contexts
 
     // Initialize integration layer
     this.contextVersioning = new ContextVersioningIntegration(
       this.versionManager,
       this.timelineEngine,
+      this.contextDetection,
       this.logger
     );
   }
@@ -128,23 +145,26 @@ export class ObsidianIntegration {
       return;
     }
 
-    // File modification events - TODO: Fix event type compatibility
-    // this.registerEvent(
-    //   this.app.vault.on('modify', this.handleFileModify.bind(this))
-    // );
-    // this.registerEvent(
-    //   this.app.vault.on('create', this.handleFileCreate.bind(this))
-    // );
-    // this.registerEvent(
-    //   this.app.vault.on('delete', this.handleFileDelete.bind(this))
-    // );
-    // this.registerEvent(
-    //   this.app.vault.on('rename', this.handleFileRename.bind(this))
-    // );
+    this.plugin.registerEvent(
+      this.app.vault.on('modify', this.handleFileModify.bind(this))
+    );
+    this.plugin.registerEvent(
+      this.app.vault.on('create', this.handleFileCreate.bind(this))
+    );
+    this.plugin.registerEvent(
+      this.app.vault.on('delete', this.handleFileDelete.bind(this))
+    );
+    this.plugin.registerEvent(
+      this.app.vault.on('rename', this.handleFileRename.bind(this))
+    );
 
-    // Workspace events - TODO: Fix event type compatibility
-    // this.app.workspace.on('file-open', this.handleFileOpen.bind(this));
-    // this.app.workspace.on('quit', this.handleWorkspaceQuit.bind(this));
+    // Workspace events
+    this.plugin.registerEvent(
+      this.app.workspace.on('file-open', this.handleFileOpen.bind(this))
+    );
+    this.plugin.registerEvent(
+      this.app.workspace.on('quit', this.handleWorkspaceQuit.bind(this))
+    );
 
     this.eventListenersRegistered = true;
     this.logger.debug('Event listeners registered');
@@ -170,13 +190,11 @@ export class ObsidianIntegration {
 
   private cleanupCaches(): void {
     // Clean up old file content cache entries
-
-    for (const [filePath] of this.fileContentCache) {
-      // TODO: Add timestamp tracking to know when to cleanup
-      // For now, limit cache size
-      if (this.fileContentCache.size > 1000) {
-        this.fileContentCache.delete(filePath);
-        break;
+    if (this.fileContentCache.size > 1000) {
+      // Simple FIFO cache eviction
+      const oldestKey = this.fileContentCache.keys().next().value;
+      if (oldestKey) {
+        this.fileContentCache.delete(oldestKey);
       }
     }
 
@@ -187,10 +205,130 @@ export class ObsidianIntegration {
 
   private async processBackgroundTasks(): Promise<void> {
     // Background processing tasks
-    // TODO: Implement background tasks like:
-    // - Storage optimization
-    // - Index rebuilding
-    // - Performance monitoring
+  }
+
+  private getDebouncedProcess(filePath: string): () => void {
+    if (!this.debouncedHandlers.has(filePath)) {
+      const debouncedFunc = debounce(
+        () => this.processFileChange(filePath),
+        this.config.debounceDelay,
+        true
+      );
+      this.debouncedHandlers.set(filePath, debouncedFunc);
+    }
+    const debouncedHandler = this.debouncedHandlers.get(filePath);
+    if (debouncedHandler) {
+      return debouncedHandler;
+    }
+    // This part should ideally not be reached if the logic is correct
+    this.logger.error('Could not get or create debounced handler');
+    return () => {};
+  }
+
+  private async processFileChange(filePath: string): Promise<void> {
+    if (this.processingQueue.has(filePath)) {
+      this.logger.debug('File is already being processed, skipping.', {
+        filePath,
+      });
+      return;
+    }
+
+    this.processingQueue.add(filePath);
+    try {
+      const file = this.app.vault.getAbstractFileByPath(filePath);
+      if (!(file instanceof TFile)) return;
+
+      const newContent = await this.app.vault.cachedRead(file);
+      const oldContent = this.fileContentCache.get(filePath) || '';
+
+      if (newContent === oldContent) {
+        this.logger.debug('Content has not changed, skipping processing.', {
+          filePath,
+        });
+        return;
+      }
+
+      await this.contextVersioning.processFileChange(
+        filePath,
+        newContent,
+        oldContent
+      );
+      this.fileContentCache.set(filePath, newContent);
+    } catch (error) {
+      this.logger.error('Failed to process file in background', error);
+    } finally {
+      this.processingQueue.delete(filePath);
+    }
+  }
+
+  private handleFileModify = async (file: TAbstractFile): Promise<void> => {
+    if (!(file instanceof TFile) || this.isPathExcluded(file.path)) {
+      return;
+    }
+
+    this.logger.debug(`File modified: ${file.path}`);
+    const debouncedProcess = this.getDebouncedProcess(file.path);
+    debouncedProcess();
+  };
+
+  private handleFileCreate = async (file: TAbstractFile): Promise<void> => {
+    if (!(file instanceof TFile) || this.isPathExcluded(file.path)) {
+      return;
+    }
+    this.logger.info(`File created: ${file.path}`);
+    const newContent = await this.app.vault.cachedRead(file);
+    await this.contextVersioning.processFileChange(file.path, newContent, '');
+    this.fileContentCache.set(file.path, newContent);
+  };
+
+  private handleFileDelete = async (file: TAbstractFile): Promise<void> => {
+    if (this.isPathExcluded(file.path)) {
+      return;
+    }
+    this.logger.info(`File deleted: ${file.path}`);
+    this.fileContentCache.delete(file.path);
+    this.debouncedHandlers.delete(file.path);
+    await this.contextVersioning.handleFileDeletion(file.path);
+  };
+
+  private handleFileRename = async (
+    file: TAbstractFile,
+    oldPath: string
+  ): Promise<void> => {
+    if (this.isPathExcluded(file.path) && this.isPathExcluded(oldPath)) {
+      return;
+    }
+    this.logger.info(`File renamed: ${oldPath} -> ${file.path}`);
+    // Update caches
+    const cachedContent = this.fileContentCache.get(oldPath);
+    if (cachedContent !== undefined) {
+      this.fileContentCache.set(file.path, cachedContent);
+      this.fileContentCache.delete(oldPath);
+    }
+
+    const debouncedHandler = this.debouncedHandlers.get(oldPath);
+    if (debouncedHandler) {
+      this.debouncedHandlers.set(file.path, debouncedHandler);
+      this.debouncedHandlers.delete(oldPath);
+    }
+    await this.contextVersioning.handleFileRename(oldPath, file.path);
+  };
+
+  private handleFileOpen = (file: TFile | null): void => {
+    if (!file) return;
+    this.logger.debug(`File opened: ${file.path}`);
+    // Potentially pre-cache or trigger analysis on file open
+  };
+
+  private handleWorkspaceQuit = async (): Promise<void> => {
+    this.logger.info('Obsidian is quitting. Cleaning up...');
+    await this.cleanup();
+  };
+
+  private isPathExcluded(path: string): boolean {
+    return this.config.excludePatterns.some(pattern =>
+      new RegExp(pattern).test(path)
+    );
   }
 
   // Public API methods
@@ -206,8 +344,8 @@ export class ObsidianIntegration {
         filePath,
         nodeId
       );
-      if (result.success) {
-        // TODO: Update file content in editor
+      if (result.success && result.content) {
+        await this.app.vault.modify(file, result.content);
         this.logger.info('Navigation successful', {
           filePath,
           nodeId,
@@ -233,8 +371,12 @@ export class ObsidianIntegration {
         return null;
       }
 
-      await this.app.vault.read(file);
-      const node = await this.timelineEngine.createNode(filePath, label, true);
+      const content = await this.app.vault.read(file);
+      const node = await this.contextVersioning.createManualCheckpoint(
+        filePath,
+        content,
+        label
+      );
 
       this.logger.info('Manual checkpoint created', {
         filePath,
@@ -292,7 +434,7 @@ export class ObsidianIntegration {
     return {
       filesTracked: this.fileContentCache.size,
       totalSnapshots: stats.totalSnapshots,
-      totalTimelineNodes: 0, // TODO: Implement
+      totalTimelineNodes: stats.totalNodes,
       cacheSize: this.fileContentCache.size,
       processingQueueSize: this.processingQueue.size,
     };

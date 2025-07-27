@@ -40,4 +40,7 @@ export interface IStorageEngine {
   // Utility
   initialize(): Promise<void>;
   close(): Promise<void>;
+  renameFilePath(oldPath: string, newPath: string): Promise<void>;
+  getSnapshotsCount(): Promise<number>;
+  getNodesCount(): Promise<number>;
 }

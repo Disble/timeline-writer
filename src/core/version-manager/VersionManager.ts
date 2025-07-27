@@ -1,118 +1,80 @@
-import { randomUUID } from 'crypto';
-import type { FileMetadata, VersionSnapshot } from '../../data/models/core';
+import { v4 as uuidv4 } from 'uuid';
+import type { VersionSnapshot } from '../../data/models/core';
 import type { IStorageEngine } from '../../data/storage/IStorageEngine';
-import { CompressionEngine } from './CompressionEngine';
-import { DiffEngine } from './DiffEngine';
+import type { Logger } from '../../utils/logger';
+import type { CompressionEngine } from './CompressionEngine';
+import type { DiffEngine } from './DiffEngine';
 
-export interface IVersionManager {
-  createVersionSnapshot(
-    fileId: string,
-    content: string
-  ): Promise<VersionSnapshot>;
-  getVersionSnapshot(snapshotId: string): Promise<VersionSnapshot | null>;
-  restoreVersion(snapshotId: string): Promise<string | null>;
-}
-
-export class VersionManager implements IVersionManager {
+export class VersionManager {
+  public storageEngine: IStorageEngine;
   private diffEngine: DiffEngine;
   private compressionEngine: CompressionEngine;
 
-  constructor(private storage: IStorageEngine) {
-    this.diffEngine = new DiffEngine();
-    this.compressionEngine = new CompressionEngine();
+  constructor(
+    storageEngine: IStorageEngine,
+    diffEngine: DiffEngine,
+    compressionEngine: CompressionEngine,
+    _logger: Logger
+  ) {
+    this.storageEngine = storageEngine;
+    this.diffEngine = diffEngine;
+    this.compressionEngine = compressionEngine;
   }
 
   async createVersionSnapshot(
-    fileId: string,
-    content: string
+    filePath: string,
+    content: string,
+    isCheckpoint: boolean
   ): Promise<VersionSnapshot> {
-    const history = await this.storage.getFileHistory(fileId);
+    const history = await this.storageEngine.getFileHistory(filePath);
     const parentNode = history?.currentVersion
-      ? await this.storage.getNode(history.currentVersion)
+      ? await this.storageEngine.getNode(history.currentVersion)
       : null;
 
     let parentSnapshot: VersionSnapshot | null = null;
     if (parentNode) {
-      const parentSnapshots = await this.storage.getSnapshots(parentNode.id);
+      const parentSnapshots = await this.storageEngine.getSnapshots(
+        parentNode.id
+      );
       parentSnapshot =
         parentSnapshots.length > 0 ? parentSnapshots[0] || null : null;
     }
 
-    const diff = parentSnapshot
-      ? this.diffEngine.createDiff(parentSnapshot.fullContent || '', content)
-      : null;
-
-    const metadata: FileMetadata = {
-      filePath: history?.fileName || 'unknown',
-      timestamp: new Date(),
-      contextId: parentNode?.contextId || 'default',
-      isCheckpoint: parentNode?.isCheckpoint || false,
-      compression: 'none',
-      originalSize: content.length,
-      compressedSize: content.length,
-    };
-
     const newSnapshot: VersionSnapshot = {
-      id: randomUUID(),
-      fileId,
-      nodeId: parentNode?.id || '',
-      contentHash: randomUUID(), // Placeholder for content hash
-      fullContent: content,
+      id: uuidv4(),
+      fileId: history?.fileId ?? filePath,
+      nodeId: '', // This will be set when the timeline node is created
+      contentHash: '', // This will be calculated
       size: content.length,
-      metadata,
+      metadata: {
+        filePath: filePath,
+        timestamp: new Date(),
+        contextId: parentNode?.contextId ?? 'default',
+        isCheckpoint,
+        compression: 'gzip',
+        originalSize: content.length,
+        compressedSize: 0,
+      },
     };
 
-    if (diff) {
-      const diffString = JSON.stringify(diff);
-      const compressedDiff = this.compressionEngine.compress(diffString);
-
+    if (parentSnapshot?.fullContent) {
+      const patch = this.diffEngine.createPatch(
+        parentSnapshot.fullContent,
+        content
+      );
+      const compressedPatch = this.compressionEngine.compress(patch);
       newSnapshot.diffFromParent = {
         algorithm: 'gzip',
-        data: compressedDiff,
-        originalSize: diffString.length,
-        compressedSize: compressedDiff.length,
+        data: compressedPatch,
+        originalSize: patch.length,
+        compressedSize: compressedPatch.length,
       };
+      newSnapshot.metadata.compressedSize = compressedPatch.length;
+    } else {
+      newSnapshot.fullContent = content;
     }
 
-    await this.storage.saveSnapshotObject(newSnapshot);
+    await this.storageEngine.saveSnapshotObject(newSnapshot);
     return newSnapshot;
-  }
-
-  async getVersionSnapshot(
-    snapshotId: string
-  ): Promise<VersionSnapshot | null> {
-    return this.storage.getSnapshot(snapshotId);
-  }
-
-  async restoreVersion(snapshotId: string): Promise<string | null> {
-    const snapshot = await this.storage.getSnapshot(snapshotId);
-    if (!snapshot) {
-      return null;
-    }
-
-    if (snapshot.fullContent) {
-      return snapshot.fullContent;
-    }
-
-    if (snapshot.diffFromParent) {
-      const parentNode = await this.storage.getNode(snapshot.nodeId);
-      let parentSnapshot: VersionSnapshot | null = null;
-      if (parentNode) {
-        const parentSnapshots = await this.storage.getSnapshots(parentNode.id);
-        parentSnapshot =
-          parentSnapshots.length > 0 ? parentSnapshots[0] || null : null;
-      }
-
-      if (parentSnapshot?.fullContent) {
-        const decompressedDiffString = this.compressionEngine.decompress(
-          snapshot.diffFromParent.data,
-          snapshot.diffFromParent.algorithm
-        );
-        const diff = JSON.parse(decompressedDiffString);
-        return this.diffEngine.applyDiff(parentSnapshot.fullContent, diff);
-      }
-    }
-
-    return null; // Cannot restore if no full content and no valid parent diff
   }
 }

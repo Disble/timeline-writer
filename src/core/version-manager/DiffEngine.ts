@@ -1,28 +1,26 @@
-import * as DiffMatchPatch from 'diff-match-patch';
-
-export type Diff = DiffMatchPatch.Diff[];
+import { type Diff, diff_match_patch } from 'diff-match-patch';
 
 export class DiffEngine {
-  private dmp;
+  private dmp: typeof diff_match_patch.prototype;
 
   constructor() {
-    this.dmp = new DiffMatchPatch.diff_match_patch();
+    this.dmp = new diff_match_patch();
   }
 
-  createDiff(oldContent: string, newContent: string): Diff {
-    const diff = this.dmp.diff_main(oldContent, newContent);
-    this.dmp.diff_cleanupSemantic(diff);
-    return diff;
+  createPatch(text1: string, text2: string): string {
+    const diffs = this.dmp.diff_main(text1, text2);
+    this.dmp.diff_cleanupSemantic(diffs);
+    const patch = this.dmp.patch_make(text1, diffs);
+    return this.dmp.patch_toText(patch);
   }
 
-  applyDiff(content: string, diff: Diff): string {
-    const patches = this.dmp.patch_make(content, diff);
-    const [newContent] = this.dmp.patch_apply(patches, content);
-    return newContent;
+  applyPatch(text: string, patchText: string): string {
+    const patches = this.dmp.patch_fromText(patchText);
+    const [newText] = this.dmp.patch_apply(patches, text);
+    return newText;
   }
 
-  validateDiff(content: string, diff: Diff, expected: string): boolean {
-    const patchedContent = this.applyDiff(content, diff);
-    return patchedContent === expected;
+  diff(text1: string, text2: string): Diff[] {
+    return this.dmp.diff_main(text1, text2);
   }
 }

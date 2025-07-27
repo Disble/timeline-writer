@@ -6,6 +6,7 @@ import type {
   TimelineNode,
 } from '../../data/models/core';
 import type { IStorageEngine } from '../../data/storage/IStorageEngine';
+import type { Logger } from '../../utils/logger';
 
 export interface ITimelineEngine {
   createNode(
@@ -25,7 +26,11 @@ export interface ITimelineEngine {
 }
 
 export class TimelineEngine implements ITimelineEngine {
-  constructor(private storage: IStorageEngine) {}
+  private storage: IStorageEngine;
+
+  constructor(storage: IStorageEngine, _logger: Logger) {
+    this.storage = storage;
+  }
 
   async createNode(
     fileId: string,
@@ -163,5 +168,10 @@ export class TimelineEngine implements ITimelineEngine {
     await this.storage.saveFileHistory(history);
 
     return true;
+  }
+
+  async saveNode(node: TimelineNode): Promise<void> {
+    await this.storage.saveNode(node);
+    // this.logger.info(`Node saved: ${node.id}`); // Assuming logger is available
   }
 }

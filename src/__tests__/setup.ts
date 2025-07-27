@@ -28,8 +28,8 @@ Object.defineProperty(window, 'HTMLElement', {
 });
 
 // Mock Obsidian specific globals
-global.window = global.window || {};
-global.document = global.document || {};
+global.window = (global.window || {}) as Window & typeof globalThis;
+global.document = (global.document || {}) as Document;
 
 // Add any global test utilities here
 export const createMockApp = () => ({
