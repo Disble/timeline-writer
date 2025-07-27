@@ -1,0 +1,51 @@
+name: Quick Validation
+
+on:
+  push:
+    branches-ignore: [main, develop]
+  pull_request:
+    branches-ignore: [main, develop]
+
+env:
+  NODE_VERSION: '18'
+
+jobs:
+  quick-check:
+    name: Quick Code Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    strategy:
+      fail-fast: false
+      matrix:
+        check: [type-check, lint, format, test]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: Type checking
+        if: matrix.check == 'type-check'
+        run: npm run type-check
+
+      - name: Lint code
+        if: matrix.check == 'lint'
+        run: npm run lint
+
+      - name: Check formatting
+        if: matrix.check == 'format'
+        run: npm run format
+
+      - name: Run tests
+        if: matrix.check == 'test'
+        run: npm test

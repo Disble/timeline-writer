@@ -21,20 +21,21 @@ Timeline Writer permite a los escritores de ficción gestionar múltiples contex
 
 ### Cronograma de Desarrollo
 
-| Fase | Duración | Estado | Descripción |
-|------|----------|--------|-------------|
-| **Fase 1**: Setup y Fundación | 1-2 semanas | 🔄 Ready | Infraestructura base y herramientas |
-| **Fase 2**: Data Layer | 2-3 semanas | ⏳ Pending | Storage engine y modelos de datos |
-| **Fase 3**: Context Detection | 3-4 semanas | ⏳ Pending | Motor de IA para detección de contexto |
-| **Fase 4**: Version Management | 2-3 semanas | ⏳ Pending | Sistema de versionado temporal |
-| **Fase 5**: User Interface | 3-4 semanas | ⏳ Pending | UI completa e integración con Obsidian |
-| **Fase 6**: Testing & Optimization | 2-3 semanas | ⏳ Pending | Pulido final y optimización |
+| Fase                               | Duración    | Estado     | Descripción                            |
+| ---------------------------------- | ----------- | ---------- | -------------------------------------- |
+| **Fase 1**: Setup y Fundación      | 1-2 semanas | 🔄 Ready   | Infraestructura base y herramientas    |
+| **Fase 2**: Data Layer             | 2-3 semanas | ⏳ Pending | Storage engine y modelos de datos      |
+| **Fase 3**: Context Detection      | 3-4 semanas | ⏳ Pending | Motor de IA para detección de contexto |
+| **Fase 4**: Version Management     | 2-3 semanas | ⏳ Pending | Sistema de versionado temporal         |
+| **Fase 5**: User Interface         | 3-4 semanas | ⏳ Pending | UI completa e integración con Obsidian |
+| **Fase 6**: Testing & Optimization | 2-3 semanas | ⏳ Pending | Pulido final y optimización            |
 
 **Tiempo estimado total**: 16-19 semanas (~4-5 meses)
 
 ## 🏗️ Arquitectura Técnica
 
 ### Stack Tecnológico
+
 - **TypeScript** con tipado estricto
 - **React** para componentes de UI
 - **Obsidian API** v1.4.16
@@ -44,6 +45,7 @@ Timeline Writer permite a los escritores de ficción gestionar múltiples contex
 - **pako** (compresión) y **diff-match-patch** (diferencias)
 
 ### Componentes Principales
+
 - **Context Detection Engine**: Análisis semántico, keywords, patrones temporales
 - **Hybrid Version Manager**: Checkpoints completos + diffs comprimidos
 - **Timeline Engine**: Navegación temporal y ramificación
@@ -52,6 +54,7 @@ Timeline Writer permite a los escritores de ficción gestionar múltiples contex
 ## 📋 Casos de Uso
 
 ### Para Escritores de Ficción
+
 - Escribir sobre **Personaje A** → cambiar a **Personaje B** → snapshot automático
 - Explorar **líneas narrativas alternativas** sin perder versiones anteriores
 - **Comparar versiones** de un capítulo para ver evolución del personaje
@@ -59,6 +62,7 @@ Timeline Writer permite a los escritores de ficción gestionar múltiples contex
 - **Crear checkpoints manuales** antes de grandes cambios narrativos
 
 ### Workflows Típicos
+
 1. **Escritura Multi-Contexto**: Cambiar entre personajes/arcos con detección automática
 2. **Exploración Narrativa**: Crear ramas para explorar direcciones alternativas
 3. **Revisión Temporal**: Comparar evolución de personajes o tramas
@@ -66,16 +70,18 @@ Timeline Writer permite a los escritores de ficción gestionar múltiples contex
 
 ## 🎨 Capturas de Pantalla (Mockups)
 
-*Las capturas se añadirán durante el desarrollo de la UI*
+_Las capturas se añadirán durante el desarrollo de la UI_
 
 ## 🛠️ Desarrollo
 
 ### Requisitos Previos
+
 - Node.js 18+
 - Obsidian 1.4.16+
 - Git
 
 ### Setup de Desarrollo
+
 ```bash
 # Clonar el repositorio
 git clone <repository-url>
@@ -96,7 +102,49 @@ npm run build
 
 **Nota**: Este proyecto utiliza npm como gestor de paquetes. No se incluye yarn.lock en el repositorio.
 
+### CI/CD Pipeline
+
+El proyecto incluye un pipeline de CI/CD optimizado que replica las validaciones de Husky con las mejores prácticas de velocidad:
+
+#### 🚀 Optimizaciones de Velocidad
+
+- **Ejecución Paralela**: Múltiples validaciones simultáneas
+- **Cache Inteligente**: npm cache basado en package-lock.json
+- **Matrix Strategy**: Tests en Node.js 18 y 20
+- **Timeouts Optimizados**: Límites específicos por tipo de validación
+- **npm Optimizado**: Instalación rápida con `--prefer-offline`
+
+#### Validaciones Automáticas
+
+- **Type Checking**: Verificación de tipos TypeScript (5 min)
+- **Linting**: Análisis de código con ESLint (5 min)
+- **Formatting**: Verificación de formato con Prettier (3 min)
+- **Build**: Compilación del proyecto (15 min)
+- **Tests**: Ejecución de tests unitarios con cobertura
+- **Security Audit**: Auditoría de dependencias (10 min)
+- **Coverage**: Reporte de cobertura de código
+
+#### Workflows de GitHub Actions
+
+- **PR Validation**: Validación paralela en Pull Requests (8-12 min)
+- **Main Branch**: Pipeline completo con artefactos (15-20 min)
+- **Quick Validation**: Validación ultra-rápida para desarrollo (8-10 min)
+
+#### Configuración Local
+
+```bash
+# Instalar Husky hooks
+npm run prepare
+
+# Validación manual (misma que CI)
+npm run validate
+
+# Validación pre-commit (misma que Husky)
+npm run pre-commit
+```
+
 ### Estructura del Proyecto
+
 ```
 timeline-writer/
 ├── specs/                    # 📋 Especificaciones detalladas
@@ -116,12 +164,14 @@ timeline-writer/
 ## 📊 Métricas Objetivo
 
 ### Performance
+
 - **Detección de contexto**: < 100ms para documentos de 10K palabras
 - **Operaciones de storage**: < 50ms promedio
 - **Tiempo de inicio**: < 500ms para vaults de 10K archivos
 - **Eficiencia de storage**: < 20% overhead vs archivos originales
 
 ### Calidad
+
 - **Precisión de detección**: > 85%
 - **Falsos positivos**: < 10%
 - **Cobertura de tests**: > 95%
@@ -132,6 +182,7 @@ timeline-writer/
 Este proyecto está en desarrollo activo. Las contribuciones serán bienvenidas una vez que se complete la implementación base.
 
 ### Roadmap Futuro
+
 - **v2.0**: Integración con IA para sugerencias de escritura
 - **v2.1**: Colaboración en tiempo real entre escritores
 - **v2.2**: Export a plataformas de publicación
@@ -152,4 +203,4 @@ Este proyecto está en desarrollo activo. Las contribuciones serán bienvenidas 
 
 **Timeline Writer** - Haciendo que el versionado temporal sea invisible para que puedas enfocarte en crear historias extraordinarias.
 
-*Desarrollado con ❤️ para la comunidad de escritores de Obsidian*
+_Desarrollado con ❤️ para la comunidad de escritores de Obsidian_

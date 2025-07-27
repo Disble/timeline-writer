@@ -1,0 +1,58 @@
+name: Cache Optimization Example
+
+on:
+  workflow_dispatch: # Manual trigger for testing
+
+env:
+  NODE_VERSION: '18'
+
+jobs:
+  optimized-build:
+    name: Optimized Build with Advanced Caching
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      # Cache build artifacts
+      - name: Cache build artifacts
+        uses: actions/cache@v4
+        with:
+          path: |
+            dist/
+            main.js
+            manifest.json
+          key: ${{ runner.os }}-build-${{ hashFiles('src/**/*.ts', 'esbuild.config.mjs') }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+
+      # Cache test results
+      - name: Cache test results
+        uses: actions/cache@v4
+        with:
+          path: |
+            coverage/
+            .nyc_output/
+          key: ${{ runner.os }}-test-${{ hashFiles('src/**/*.ts', 'jest.config.js') }}
+          restore-keys: |
+            ${{ runner.os }}-test-
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: Build project (skip if cached)
+        if: steps.cache-build.outputs.cache-hit != 'true'
+        run: npm run build
+
+      - name: Run tests (skip if cached)
+        if: steps.cache-test.outputs.cache-hit != 'true'
+        run: npm run test:coverage
