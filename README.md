@@ -117,7 +117,7 @@ El proyecto incluye un pipeline de CI/CD optimizado que replica las validaciones
 #### Validaciones Automáticas
 
 - **Type Checking**: Verificación de tipos TypeScript (5 min)
-- **Linting**: Análisis de código con ESLint (5 min)
+- **Linting**: Análisis de código con Biome (5 min)
 - **Formatting**: Verificación de formato con Biome (3 min)
 - **Build**: Compilación del proyecto (15 min)
 - **Tests**: Ejecución de tests unitarios con cobertura

@@ -45,8 +45,7 @@ Esta fase establece todos los elementos fundamentales necesarios para un desarro
     "jest": "^29.0.0",
     "@types/jest": "^29.0.0",
     "ts-jest": "^29.0.0",
-    "eslint": "^8.0.0",
-    "prettier": "^3.0.0"
+    "@biomejs/biome": "^2.1.0"
   }
 }
 ```
@@ -68,8 +67,12 @@ Esta fase establece todos los elementos fundamentales necesarios para un desarro
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "lint": "eslint src --ext .ts,.tsx",
-    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "lint": "biome lint src",
+    "lint:fix": "biome lint src --write",
+    "format": "biome format src",
+    "format:fix": "biome format src --write",
+    "check": "biome check src",
+    "check:fix": "biome check src --write",
     "type-check": "tsc --noEmit",
     "clean": "rm -rf dist"
   }
@@ -136,13 +139,13 @@ timeline-writer/
     "source.fixAll": true
   },
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "editor.defaultFormatter": "biomejs.biome"
 }
 ```
 
-#### ESLint + Prettier
-- [ ] Configurar ESLint con reglas TypeScript estrictas
-- [ ] Setup de Prettier para formato consistente
+#### Biome Setup
+- [ ] Configurar Biome para linting, formatting e import organization
+- [ ] Setup de reglas de código consistentes
 - [ ] Configurar pre-commit hooks con husky
 - [ ] Integrar con editor para desarrollo fluido
 
@@ -195,7 +198,7 @@ timeline-writer/
 - [ ] El plugin se carga correctamente en Obsidian
 - [ ] Todos los scripts de package.json funcionan
 - [ ] Tests básicos pasan al 100%
-- [ ] ESLint y Prettier no reportan errores
+- [ ] Biome no reporta errores de linting o formato
 - [ ] Hot reload funciona para desarrollo
 - [ ] Documentación básica está completa
 

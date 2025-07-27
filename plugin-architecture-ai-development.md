@@ -816,8 +816,12 @@ npm install --save-dev jest @types/jest ts-jest
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "lint": "eslint src --ext .ts,.tsx",
-    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "lint": "biome lint src",
+    "lint:fix": "biome lint src --write",
+    "format": "biome format src",
+    "format:fix": "biome format src --write",
+    "check": "biome check src",
+    "check:fix": "biome check src --write",
     "type-check": "tsc --noEmit",
     "ai-analyze": "node scripts/ai-analysis.js"
   }

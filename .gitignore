@@ -52,7 +52,7 @@ pids/
 # Optional npm cache directory
 .npm
 
-# Optional eslint cache
+# Optional linting cache
 .eslintcache
 
 # Typescript cache

@@ -174,7 +174,7 @@ Runs TypeScript compiler in no-emit mode to check types without generating outpu
 npm run lint
 ```
 
-Runs ESLint on all TypeScript files in the `src` directory.
+Runs Biome linting on all files in the `src` directory.
 
 ### Formatting
 
@@ -237,14 +237,14 @@ npx tsc --noEmit src/path/to/file.ts
 npx tsc --noEmit --listFiles
 ```
 
-#### ESLint Issues
+#### Linting Issues
 
 ```bash
 # Fix auto-fixable issues
 npm run lint:fix
 
 # Check specific file
-npx eslint src/path/to/file.ts
+npm run lint src/path/to/file.ts
 ```
 
 #### Biome Issues
@@ -304,11 +304,10 @@ npm test
 
 ## Configuration Files
 
-### ESLint
+### Linting (Legacy Reference)
 
-- **File**: `.eslintrc.js`
-- **Purpose**: Code quality and style rules
-- **Extends**: TypeScript and React configurations
+- **Previous tool**: ESLint (now replaced by Biome)
+- **Current tool**: See Biome section above
 
 ### Biome
 

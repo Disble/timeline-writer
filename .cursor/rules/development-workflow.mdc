@@ -33,8 +33,11 @@ npm test
 # Type checking
 npm run type-check
 
-# Linting
-npm run lint
+# Biome linting and formatting
+npm run lint          # Lint only
+npm run format        # Format check only
+npm run check         # Lint + format + organize imports
+npm run check:fix     # Fix all issues automatically
 ```
 
 ## Development Phases
@@ -44,6 +47,7 @@ Currently in **Phase 1: Setup and Foundation**
 - ✅ Build system with esbuild
 - ✅ Testing framework with Jest
 - ✅ Basic plugin structure
+- ✅ Biome setup for linting and formatting
 
 Next: **Phase 2: Data Layer**
 - Implement storage engine
@@ -52,81 +56,15 @@ Next: **Phase 2: Data Layer**
 - Build migration framework
 
 ## Code Quality
-- ESLint for code linting
-- Prettier for code formatting
+- Biome for code linting, formatting, and import organization
 - TypeScript strict mode enabled
 - Jest for testing with >80% coverage goal
+- Pre-commit hooks for automated code quality checks
 
 ## Git Workflow
 - Use descriptive commit messages
 - Keep commits focused and atomic
-- Run tests and linting before committing
-- Follow conventional commit format when possible
-
-## Documentation
-- Update [README.md](mdc:README.md) for user-facing changes
-- Update [DEVELOPMENT.md](mdc:DEVELOPMENT.md) for developer changes
-- Document new features and APIs
-- Keep [STATUS.md](mdc:STATUS.md) updated with progress
-
-# Development Workflow
-
-## Package Management
-- **Use npm only** - This project does not use yarn
-- No `yarn.lock` file is included in the repository
-- All scripts in [package.json](mdc:package.json) use npm commands
-
-## Build System
-- **esbuild** for fast builds and bundling
-- Configuration in [esbuild.config.mjs](mdc:esbuild.config.mjs)
-- TypeScript compilation with strict rules
-- Hot reload during development
-
-## Development Commands
-```bash
-# Install dependencies
-npm install
-
-# Development with watch mode
-npm run dev
-
-# Build for production
-npm run build
-
-# Run tests
-npm test
-
-# Type checking
-npm run type-check
-
-# Linting
-npm run lint
-```
-
-## Development Phases
-Currently in **Phase 1: Setup and Foundation**
-- ✅ Project structure and configuration
-- ✅ TypeScript setup with strict rules
-- ✅ Build system with esbuild
-- ✅ Testing framework with Jest
-- ✅ Basic plugin structure
-
-Next: **Phase 2: Data Layer**
-- Implement storage engine
-- Create data models
-- Setup compression system
-- Build migration framework
-
-## Code Quality
-- ESLint for code linting
-- Prettier for code formatting
-- TypeScript strict mode enabled
-- Jest for testing with >80% coverage goal
-
-## Git Workflow
-- Use descriptive commit messages
-- Keep commits focused and atomic
-- Run tests and linting before committing
+- Run tests and Biome checks before committing
 - Follow conventional commit format when possible
 
 ## Documentation
