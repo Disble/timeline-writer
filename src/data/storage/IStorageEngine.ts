@@ -19,7 +19,14 @@ export interface IStorageEngine {
 
   // Version Snapshot operations
   getSnapshot(snapshotId: string): Promise<VersionSnapshot | null>;
-  saveSnapshot(snapshot: VersionSnapshot): Promise<void>;
+  saveSnapshot(
+    file: { path: string },
+    content: string,
+    nodeId: string,
+    contextId: string,
+    isCheckpoint?: boolean
+  ): Promise<VersionSnapshot>;
+  saveSnapshotObject(snapshot: VersionSnapshot): Promise<void>;
   getSnapshots(nodeId: string): Promise<VersionSnapshot[]>;
 
   // File History operations

@@ -17,8 +17,16 @@ export interface NodeMetadata {
   wordCount: number;
   characterCount: number;
   contentHash: string;
-  createdBy: 'user' | 'auto';
+  createdBy: 'user' | 'auto' | 'system';
   contextSignals?: ContextSignal[];
+  contextShift?: {
+    probability: number;
+    suggestedContext: string;
+    signalTypes: string[];
+    timestamp: Date;
+  };
+  mergeSource?: string[];
+  isMergeNode?: boolean;
 }
 
 export interface VersionSnapshot {
@@ -40,6 +48,11 @@ export interface FileMetadata {
   compression: 'none' | 'gzip' | 'lz4';
   originalSize: number;
   compressedSize: number;
+  trigger?: {
+    type: 'context-shift' | 'manual' | 'periodic' | 'significant-change';
+    confidence?: number;
+    metadata?: Record<string, unknown>;
+  };
 }
 
 export interface ContextDefinition {

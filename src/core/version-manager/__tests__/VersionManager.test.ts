@@ -32,7 +32,7 @@ describe('VersionManager', () => {
       expect(snapshot).toBeDefined();
       expect(snapshot.fullContent).toBe(content);
       expect(snapshot.diffFromParent).toBeUndefined();
-      expect(storage.saveSnapshot).toHaveBeenCalledWith(snapshot);
+      expect(storage.saveSnapshotObject).toHaveBeenCalledWith(snapshot);
     });
 
     it('should create a diff snapshot when there is a parent', async () => {
@@ -57,7 +57,7 @@ describe('VersionManager', () => {
       expect(snapshot.fullContent).toBe(newContent);
       expect(snapshot.diffFromParent).toBeDefined();
       expect(snapshot.diffFromParent?.algorithm).toBe('gzip');
-      expect(storage.saveSnapshot).toHaveBeenCalledWith(snapshot);
+      expect(storage.saveSnapshotObject).toHaveBeenCalledWith(snapshot);
     });
   });
 });
