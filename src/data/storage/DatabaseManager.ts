@@ -1,5 +1,6 @@
+import type { App } from 'obsidian';
 import initSqlJs, { type Database } from 'sql.js';
-import type { Logger } from '../../utils/logger';
+import { Logger } from '../../utils/logger';
 import type {
   ContextDefinition,
   TimelineNode,
@@ -58,19 +59,51 @@ interface ContextDefinitionRow extends SQLiteRow {
   metadata: string;
 }
 
-export class DatabaseManager {
-  private db: Database | null = null;
-  private logger: Logger;
+const SQL_WASM_FILE = 'sql-wasm.wasm';
 
-  constructor(logger: Logger) {
-    this.logger = logger;
+export class DatabaseManager {
+  private static instance: DatabaseManager;
+  db: Database | null = null;
+  private logger = Logger.getInstance();
+  private app: App;
+  private pluginPath: string;
+
+  private constructor(app: App, pluginPath: string) {
+    this.app = app;
+    this.pluginPath = pluginPath;
+  }
+
+  public static getInstance(app?: App, pluginPath?: string): DatabaseManager {
+    if (!DatabaseManager.instance) {
+      if (!app || !pluginPath) {
+        throw new Error(
+          'DatabaseManager requires app and pluginPath for initialization'
+        );
+      }
+      DatabaseManager.instance = new DatabaseManager(app, pluginPath);
+    }
+    return DatabaseManager.instance;
   }
 
   async initialize(): Promise<void> {
+    if (this.db) {
+      this.logger.warn('Database already initialized.');
+      return;
+    }
+
     try {
-      const SQL = await initSqlJs();
+      this.logger.info('Initializing database...');
+      const wasmPath = `${this.pluginPath}/${SQL_WASM_FILE}`;
+      this.logger.info(`Loading wasm from: ${wasmPath}`);
+      
+      const response = await this.app.vault.adapter.readBinary(wasmPath);
+      const SQL = await initSqlJs({ wasmBinary: response });
       this.db = new SQL.Database();
+
+      // Enable foreign keys
+      this.db.exec('PRAGMA foreign_keys = ON;');
       await this.createTables();
+
       this.logger.info('Database initialized successfully');
     } catch (error) {
       this.logger.error('Failed to initialize database', error);

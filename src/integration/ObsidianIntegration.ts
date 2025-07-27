@@ -31,6 +31,7 @@ export class ObsidianIntegration {
   private plugin: Plugin;
   private logger: Logger;
   private config: ObsidianIntegrationConfig;
+  private dbManager: DatabaseManager;
 
   // Core systems
   private storageEngine!: StorageEngine;
@@ -59,6 +60,9 @@ export class ObsidianIntegration {
     this.config = { ...DEFAULT_CONFIG, ...config };
     this.logger = Logger.getInstance();
     this.logger.setLogLevel(this.config.logLevel);
+
+    const pluginPath = this.plugin.manifest.dir ?? '';
+    this.dbManager = DatabaseManager.getInstance(this.app, pluginPath);
   }
 
   async initialize(): Promise<void> {
@@ -94,10 +98,9 @@ export class ObsidianIntegration {
 
   private async initializeCoreSystem(): Promise<void> {
     // Initialize storage layer
-    const dbManager = new DatabaseManager(this.logger);
-    await dbManager.initialize();
+    await this.dbManager.initialize();
 
-    this.storageEngine = new StorageEngine(dbManager, this.logger);
+    this.storageEngine = new StorageEngine(this.dbManager, this.logger);
     await this.storageEngine.initialize();
 
     // Initialize core engines
