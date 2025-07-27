@@ -9,7 +9,6 @@ on:
 # Global environment variables
 env:
   NODE_VERSION: '18'
-  NPM_CACHE_KEY: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
 jobs:
   # Fast validation jobs that can run in parallel
