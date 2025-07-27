@@ -1,2 +1,1 @@
-# Run full validation (type-check + biome check + build + test)
-npm run pre-commit
+npm test
