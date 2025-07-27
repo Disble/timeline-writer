@@ -5,9 +5,6 @@
 		"clientKind": "git",
 		"useIgnoreFile": true
 	},
-	"files": {
-		"ignoreUnknown": false
-	},
 	"formatter": {
 		"enabled": true,
 		"indentStyle": "space",
@@ -17,29 +14,7 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"recommended": true,
-			"complexity": {
-				"noForEach": "off",
-				"noUselessConstructor": "warn"
-			},
-			"style": {
-				"useConst": "error",
-				"useTemplate": "error",
-				"useShorthandFunctionType": "error",
-				"noNonNullAssertion": "warn"
-			},
-			"suspicious": {
-				"noDebugger": "error",
-				"noConsole": "warn",
-				"noGlobalIsNan": "warn",
-				"noExplicitAny": "warn",
-				"noImplicitAnyLet": "warn",
-				"noAssignInExpressions": "warn"
-			},
-			"correctness": {
-				"noUnusedVariables": "warn",
-				"noUnusedFunctionParameters": "warn"
-			}
+			"recommended": true
 		}
 	},
 	"javascript": {
@@ -49,12 +24,6 @@
 			"trailingCommas": "es5",
 			"bracketSpacing": true,
 			"arrowParentheses": "asNeeded"
-		}
-	},
-	"json": {
-		"formatter": {
-			"indentStyle": "space",
-			"indentWidth": 2
 		}
 	},
 	"overrides": [
@@ -69,33 +38,15 @@
 			}
 		},
 		{
-			"includes": ["src/__tests__/**/*", "src/**/*.test.ts", "src/**/*.test.tsx"],
+			"includes": ["src/**/__tests__/**/*", "src/**/*.test.ts", "src/**/*.test.tsx"],
 			"linter": {
 				"rules": {
-					"correctness": {
-						"noUnusedVariables": "off"
-					},
 					"suspicious": {
 						"noExplicitAny": "off"
 					},
 					"complexity": {
+						"noUselessConstructor": "off",
 						"useLiteralKeys": "off"
-					}
-				}
-			}
-		},
-		{
-			"includes": ["src/__tests__/__mocks__/**/*"],
-			"linter": {
-				"rules": {
-					"correctness": {
-						"noUnusedVariables": "off"
-					},
-					"suspicious": {
-						"noExplicitAny": "off"
-					},
-					"complexity": {
-						"noUselessConstructor": "off"
 					}
 				}
 			}

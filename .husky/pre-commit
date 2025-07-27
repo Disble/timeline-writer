@@ -1,5 +1,2 @@
-# Format and lint staged files with Biome
-npx biome check --write $(git diff --cached --name-only --diff-filter=ACM -- '*.ts' '*.tsx' '*.js' '*.jsx' '*.json')
-
-# Run full validation
+# Run full validation (type-check + biome check + build + test)
 npm run pre-commit
