@@ -38,7 +38,7 @@ const context = await esbuild.context({
   sourcemap: prod ? false : "inline",
   treeShaking: true,
   minify: prod,
-  outfile: "main.js",
+  outdir: "dist",
   define: {
     "process.env.NODE_ENV": JSON.stringify(prod ? "production" : "development"),
   },

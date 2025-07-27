@@ -38,14 +38,21 @@ if (Test-Path $pluginPath) {
 New-Item -ItemType Directory -Path $pluginPath -Force
 Write-Host "Created plugin directory: $pluginPath"
 
-# Copy plugin files
+# Copy plugin files from dist directory
+$distPath = "dist"
+if (-not (Test-Path $distPath)) {
+    Write-Error "Dist directory not found. Please run 'npm run build' first."
+    exit 1
+}
+
 $filesToCopy = @("main.js", "manifest.json")
 foreach ($file in $filesToCopy) {
-    if (Test-Path $file) {
-        Copy-Item $file $pluginPath
+    $sourceFile = Join-Path $distPath $file
+    if (Test-Path $sourceFile) {
+        Copy-Item $sourceFile $pluginPath
         Write-Host "Copied $file to plugin directory"
     } else {
-        Write-Warning "File not found: $file"
+        Write-Warning "File not found: $sourceFile"
     }
 }
 
