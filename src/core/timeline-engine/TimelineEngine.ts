@@ -1,11 +1,11 @@
-import { randomUUID } from 'crypto';
-import {
+import { randomUUID } from 'node:crypto';
+import type {
   FileVersionHistory,
   NodeMetadata,
   TimelineBranch,
   TimelineNode,
 } from '../../data/models/core';
-import { IStorageEngine } from '../../data/storage/IStorageEngine';
+import type { IStorageEngine } from '../../data/storage/IStorageEngine';
 
 export interface ITimelineEngine {
   createNode(

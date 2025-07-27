@@ -1,5 +1,5 @@
-import { IStorageEngine } from '../../storage/IStorageEngine';
-import { IMigration } from '../MigrationManager';
+import type { IStorageEngine } from '../../storage/IStorageEngine';
+import type { IMigration } from '../MigrationManager';
 
 export class InitialSchema implements IMigration {
   public readonly version = 1;

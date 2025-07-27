@@ -1,11 +1,11 @@
 // import { Matrix } from 'ml-matrix'; // TODO: Use Matrix for advanced semantic analysis
-import { TfIdf, PorterStemmer, WordTokenizer } from 'natural';
-import {
-  ContextSignal,
+import { PorterStemmer, TfIdf, WordTokenizer } from 'natural';
+import type {
   ContextDefinition,
+  ContextSignal,
   SemanticAnalysis,
 } from '../../data/models/core';
-import { Logger } from '../../utils/logger';
+import type { Logger } from '../../utils/logger';
 
 export class SemanticAnalyzer {
   private tfidf: TfIdf;
@@ -67,7 +67,7 @@ export class SemanticAnalyzer {
     // Get vocabulary from TF-IDF
     const vocabulary = new Set<string>();
 
-    contexts.forEach((context, docIndex) => {
+    contexts.forEach((_context, docIndex) => {
       this.tfidf.listTerms(docIndex).forEach(term => {
         vocabulary.add(term.term);
       });

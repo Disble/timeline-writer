@@ -1,5 +1,5 @@
-import { NodeMetadata } from '../../data/models/core';
-import { IStorageEngine } from '../../data/storage/IStorageEngine';
+import type { NodeMetadata } from '../../data/models/core';
+import type { IStorageEngine } from '../../data/storage/IStorageEngine';
 
 export interface IMetadataEngine {
   getMetadata(nodeId: string): Promise<NodeMetadata | null>;

@@ -1,4 +1,4 @@
-import { IStorageEngine } from '../storage/IStorageEngine';
+import type { IStorageEngine } from '../storage/IStorageEngine';
 
 export interface IMigration {
   version: number;

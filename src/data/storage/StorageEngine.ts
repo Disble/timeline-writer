@@ -1,16 +1,16 @@
-import { TFile } from 'obsidian';
-import * as pako from 'pako';
 import DiffMatchPatch from 'diff-match-patch';
-import { DatabaseManager } from './DatabaseManager';
-import {
-  VersionSnapshot,
+import type { TFile } from 'obsidian';
+import * as pako from 'pako';
+import type { Logger } from '../../utils/logger';
+import type {
   CompressedDiff,
-  TimelineNode,
-  TimelineBranch,
   FileVersionHistory,
+  TimelineBranch,
+  TimelineNode,
+  VersionSnapshot,
   // FileMetadata, // TODO: Implement file metadata operations
 } from '../models/core';
-import { Logger } from '../../utils/logger';
+import type { DatabaseManager } from './DatabaseManager';
 
 export class StorageEngine {
   private dbManager: DatabaseManager;

@@ -1,5 +1,5 @@
-import { App, PluginSettingTab, Setting } from 'obsidian';
-import TimelineWriterPlugin from '../../main';
+import { type App, PluginSettingTab, Setting } from 'obsidian';
+import type TimelineWriterPlugin from '../../main';
 
 export class TimelineWriterSettingTab extends PluginSettingTab {
   plugin: TimelineWriterPlugin;
@@ -57,7 +57,7 @@ export class TimelineWriterSettingTab extends PluginSettingTab {
           .setValue(String(this.plugin.settings.minimumContentLength))
           .onChange(async value => {
             const num = parseInt(value, 10);
-            if (!isNaN(num) && num > 0) {
+            if (!Number.isNaN(num) && num > 0) {
               this.plugin.settings.minimumContentLength = num;
               await this.plugin.saveSettings();
             }
@@ -108,7 +108,7 @@ export class TimelineWriterSettingTab extends PluginSettingTab {
           .setValue(String(this.plugin.settings.maxVersionsPerFile))
           .onChange(async value => {
             const num = parseInt(value, 10);
-            if (!isNaN(num) && num > 0) {
+            if (!Number.isNaN(num) && num > 0) {
               this.plugin.settings.maxVersionsPerFile = num;
               await this.plugin.saveSettings();
             }
@@ -139,7 +139,7 @@ export class TimelineWriterSettingTab extends PluginSettingTab {
           .setValue(String(this.plugin.settings.maxMemoryUsage))
           .onChange(async value => {
             const num = parseInt(value, 10);
-            if (!isNaN(num) && num > 10) {
+            if (!Number.isNaN(num) && num > 10) {
               this.plugin.settings.maxMemoryUsage = num;
               await this.plugin.saveSettings();
             }
@@ -199,7 +199,7 @@ export class TimelineWriterSettingTab extends PluginSettingTab {
           .setValue(String(this.plugin.settings.retentionDays))
           .onChange(async value => {
             const num = parseInt(value, 10);
-            if (!isNaN(num) && num >= 0) {
+            if (!Number.isNaN(num) && num >= 0) {
               this.plugin.settings.retentionDays = num;
               await this.plugin.saveSettings();
             }

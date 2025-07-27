@@ -1,15 +1,15 @@
-import { TFile } from 'obsidian';
-import { SemanticAnalyzer } from './SemanticAnalyzer';
-import { KeywordMatcher } from './KeywordMatcher';
-import { TemporalAnalyzer } from './TemporalAnalyzer';
-import { BehavioralAnalyzer } from './BehavioralAnalyzer';
-import {
+import type { TFile } from 'obsidian';
+import type {
+  ContextDefinition,
   ContextShiftDetection,
   ContextSignal,
   FileOperation,
-  ContextDefinition,
 } from '../../data/models/core';
-import { Logger } from '../../utils/logger';
+import type { Logger } from '../../utils/logger';
+import { BehavioralAnalyzer } from './BehavioralAnalyzer';
+import { KeywordMatcher } from './KeywordMatcher';
+import { SemanticAnalyzer } from './SemanticAnalyzer';
+import { TemporalAnalyzer } from './TemporalAnalyzer';
 
 export interface ContextDetectionConfig {
   semanticWeight: number;
@@ -213,7 +213,7 @@ export class ContextDetectionEngine {
         if (!contextSignals.has(suggestedContext)) {
           contextSignals.set(suggestedContext, []);
         }
-        contextSignals.get(suggestedContext)!.push(signal);
+        contextSignals.get(suggestedContext)?.push(signal);
       }
     });
 

@@ -1,8 +1,8 @@
-import { randomUUID } from 'crypto';
-import { FileMetadata, VersionSnapshot } from '../../data/models/core';
-import { IStorageEngine } from '../../data/storage/IStorageEngine';
-import { DiffEngine } from './DiffEngine';
+import { randomUUID } from 'node:crypto';
+import type { FileMetadata, VersionSnapshot } from '../../data/models/core';
+import type { IStorageEngine } from '../../data/storage/IStorageEngine';
 import { CompressionEngine } from './CompressionEngine';
+import { DiffEngine } from './DiffEngine';
 
 export interface IVersionManager {
   createVersionSnapshot(

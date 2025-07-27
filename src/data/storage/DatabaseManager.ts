@@ -1,11 +1,11 @@
-import initSqlJs, { Database } from 'sql.js';
-import {
+import initSqlJs, { type Database } from 'sql.js';
+import type { Logger } from '../../utils/logger';
+import type {
+  ContextDefinition,
   TimelineNode,
   VersionSnapshot,
-  ContextDefinition,
   // FileVersionHistory, // TODO: Implement file version history queries
 } from '../models/core';
-import { Logger } from '../../utils/logger';
 
 interface SQLiteRow {
   [key: string]: string | number | null;

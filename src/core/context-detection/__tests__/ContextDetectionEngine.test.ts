@@ -1,10 +1,13 @@
+import type { TFile } from 'obsidian';
+import type {
+  ContextDefinition,
+  ContextSignal,
+} from '../../../data/models/core';
+import type { Logger } from '../../../utils/logger';
 import {
+  type ContextDetectionConfig,
   ContextDetectionEngine,
-  ContextDetectionConfig,
 } from '../ContextDetectionEngine';
-import { ContextDefinition, ContextSignal } from '../../../data/models/core';
-import { Logger } from '../../../utils/logger';
-import { TFile } from 'obsidian';
 
 // Mock the analyzer modules
 jest.mock('../SemanticAnalyzer');

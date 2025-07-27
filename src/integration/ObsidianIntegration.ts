@@ -1,20 +1,12 @@
-import {
-  App,
-  TFile,
-  Plugin,
-  debounce,
-  TAbstractFile,
-  EventRef,
-} from 'obsidian';
+import { type App, type Plugin, TFile } from 'obsidian';
 import { ContextDetectionEngine } from '../core/context-detection/ContextDetectionEngine';
 import { ContextVersioningIntegration } from '../core/integration/ContextVersioningIntegration';
 import { NavigationEngine } from '../core/timeline-engine/NavigationEngine';
-import { VersionManager } from '../core/version-manager/VersionManager';
 import { TimelineEngine } from '../core/timeline-engine/TimelineEngine';
-import { StorageEngine } from '../data/storage/StorageEngine';
+import { VersionManager } from '../core/version-manager/VersionManager';
 import { DatabaseManager } from '../data/storage/DatabaseManager';
+import { StorageEngine } from '../data/storage/StorageEngine';
 import { Logger } from '../utils/logger';
-import { FileOperation } from '../data/models/core';
 
 export interface ObsidianIntegrationConfig {
   enableAutoDetection: boolean;
@@ -56,7 +48,6 @@ export class ObsidianIntegration {
   // State tracking
   private isInitialized = false;
   private eventListenersRegistered = false;
-  private eventRefs: EventRef[] = [];
 
   constructor(
     app: App,
@@ -154,220 +145,6 @@ export class ObsidianIntegration {
 
     this.eventListenersRegistered = true;
     this.logger.debug('Event listeners registered');
-  }
-
-  private async handleFileModify(file: TFile): Promise<void> {
-    if (!this.shouldProcessFile(file)) {
-      return;
-    }
-
-    // Use debounced handler to avoid processing too frequently
-    const key = file.path;
-    if (this.debouncedHandlers.has(key)) {
-      return; // Already has pending handler
-    }
-
-    const debouncedHandler = debounce(
-      async () => {
-        await this.processFileOperation(file, 'modify');
-        this.debouncedHandlers.delete(key);
-      },
-      this.config.debounceDelay,
-      true
-    );
-
-    this.debouncedHandlers.set(key, debouncedHandler);
-    debouncedHandler();
-  }
-
-  private async handleFileCreate(file: TFile): Promise<void> {
-    if (!this.shouldProcessFile(file)) {
-      return;
-    }
-
-    await this.processFileOperation(file, 'create');
-  }
-
-  private async handleFileDelete(file: TFile): Promise<void> {
-    if (!this.shouldProcessFile(file)) {
-      return;
-    }
-
-    await this.processFileOperation(file, 'delete');
-  }
-
-  private registerEvent(eventRef: EventRef): void {
-    this.eventRefs.push(eventRef);
-  }
-
-  private async handleFileRename(
-    file: TAbstractFile,
-    oldPath: string
-  ): Promise<void> {
-    if (!(file instanceof TFile) || !this.shouldProcessFile(file)) {
-      return;
-    }
-
-    // Handle rename as a special case
-    this.logger.debug('File renamed', { oldPath, newPath: file.path });
-
-    // Update internal tracking
-    this.fileContentCache.delete(oldPath);
-    this.debouncedHandlers.delete(oldPath);
-  }
-
-  private async handleFileOpen(file: TFile | null): Promise<void> {
-    if (!file || !this.shouldProcessFile(file)) {
-      return;
-    }
-
-    // Cache current content for later comparison
-    try {
-      const content = await this.app.vault.read(file);
-      this.fileContentCache.set(file.path, content);
-    } catch (error) {
-      this.logger.debug('Failed to cache file content on open', error);
-    }
-  }
-
-  private async handleWorkspaceQuit(): Promise<void> {
-    await this.cleanup();
-  }
-
-  private async processFileOperation(
-    file: TFile,
-    operationType: 'create' | 'modify' | 'delete'
-  ): Promise<void> {
-    const filePath = file.path;
-
-    // Prevent concurrent processing of same file
-    if (this.processingQueue.has(filePath)) {
-      this.logger.debug('File already being processed, skipping', { filePath });
-      return;
-    }
-
-    this.processingQueue.add(filePath);
-
-    try {
-      let currentContent = '';
-      let previousContent = '';
-
-      if (operationType !== 'delete') {
-        currentContent = await this.app.vault.read(file);
-      }
-
-      if (operationType === 'modify') {
-        previousContent = this.fileContentCache.get(filePath) || '';
-      }
-
-      const operation: FileOperation = {
-        type: operationType,
-        filePath,
-        content: currentContent,
-        timestamp: new Date(),
-      };
-
-      // Only process for context detection if it's a modification with previous content
-      if (
-        operationType === 'modify' &&
-        previousContent &&
-        this.config.enableAutoDetection
-      ) {
-        await this.processContextDetection(file, operation, previousContent);
-      }
-
-      // Update cache
-      if (operationType !== 'delete') {
-        this.fileContentCache.set(filePath, currentContent);
-      } else {
-        this.fileContentCache.delete(filePath);
-      }
-
-      this.logger.debug('File operation processed', {
-        filePath,
-        operationType,
-        contentLength: currentContent.length,
-      });
-    } catch (error) {
-      this.logger.error('Failed to process file operation', error);
-    } finally {
-      this.processingQueue.delete(filePath);
-    }
-  }
-
-  private async processContextDetection(
-    file: TFile,
-    operation: FileOperation,
-    previousContent: string
-  ): Promise<void> {
-    try {
-      // Run context detection
-      const detection = await this.contextDetection.detectContextShift(
-        file,
-        operation.content,
-        previousContent
-      );
-
-      if (detection) {
-        this.logger.info('Context shift detected', {
-          filePath: file.path,
-          suggestedContext: detection.suggestedContext,
-          confidence: detection.probability,
-          signalsCount: detection.signals.length,
-        });
-
-        // Process through context versioning integration
-        const result = await this.contextVersioning.handleContextShift(
-          detection,
-          file,
-          operation.content
-        );
-
-        // Log results
-        if (result.snapshotCreated) {
-          this.logger.info('Automatic snapshot created', {
-            filePath: file.path,
-            snapshotId: result.snapshotId,
-            contextId: detection.suggestedContext,
-          });
-        }
-
-        // TODO: Show user notification if configured
-        if (result.suggestions && result.suggestions.length > 0) {
-          this.logger.debug('Integration suggestions', {
-            suggestions: result.suggestions,
-          });
-        }
-      }
-    } catch (error) {
-      this.logger.error('Context detection processing failed', error);
-    }
-  }
-
-  private shouldProcessFile(file: TFile): boolean {
-    // Check file size
-    if (file.stat.size > this.config.maxFileSize) {
-      return false;
-    }
-
-    // Check exclude patterns
-    for (const pattern of this.config.excludePatterns) {
-      if (this.matchesPattern(file.path, pattern)) {
-        return false;
-      }
-    }
-
-    // Only process markdown files for now
-    return file.extension === 'md';
-  }
-
-  private matchesPattern(path: string, pattern: string): boolean {
-    // Simple pattern matching - could be enhanced with proper glob support
-    if (pattern.includes('**')) {
-      const regex = pattern.replace(/\*\*/g, '.*').replace(/\*/g, '[^/]*');
-      return new RegExp(regex).test(path);
-    }
-    return path.includes(pattern.replace(/\*/g, ''));
   }
 
   private setupBackgroundProcessing(): void {

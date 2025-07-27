@@ -1,10 +1,10 @@
 import { Plugin } from 'obsidian';
 import {
-  TimelineWriterSettings,
   DEFAULT_SETTINGS,
+  type TimelineWriterSettings,
 } from './data/models/settings';
-import { TimelineWriterSettingTab } from './ui/settings-panel/SettingsTab';
 import { ObsidianIntegration } from './integration/ObsidianIntegration';
+import { TimelineWriterSettingTab } from './ui/settings-panel/SettingsTab';
 import { Logger } from './utils/logger';
 
 export default class TimelineWriterPlugin extends Plugin {

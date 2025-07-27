@@ -1,5 +1,5 @@
-import { ContextSignal, ContextDefinition } from '../../data/models/core';
-import { Logger } from '../../utils/logger';
+import type { ContextDefinition, ContextSignal } from '../../data/models/core';
+import type { Logger } from '../../utils/logger';
 
 export interface KeywordMatch {
   keyword: string;

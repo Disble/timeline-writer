@@ -1,13 +1,13 @@
-import { TFile } from 'obsidian';
-import {
-  ContextShiftDetection,
+import type { TFile } from 'obsidian';
+import type {
   ContextDefinition,
-  VersionSnapshot,
+  ContextShiftDetection,
   TimelineNode,
+  VersionSnapshot,
 } from '../../data/models/core';
-import { VersionManager } from '../version-manager/VersionManager';
-import { TimelineEngine } from '../timeline-engine/TimelineEngine';
-import { Logger } from '../../utils/logger';
+import type { Logger } from '../../utils/logger';
+import type { TimelineEngine } from '../timeline-engine/TimelineEngine';
+import type { VersionManager } from '../version-manager/VersionManager';
 
 export interface SnapshotTrigger {
   type: 'context-shift' | 'manual' | 'periodic' | 'significant-change';

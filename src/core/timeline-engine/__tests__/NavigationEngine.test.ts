@@ -1,7 +1,7 @@
-import { NavigationEngine, MergeStrategy } from '../NavigationEngine';
-import { TimelineNode, TimelineBranch } from '../../../data/models/core';
-import { IStorageEngine } from '../../../data/storage/IStorageEngine';
-import { Logger } from '../../../utils/logger';
+import type { TimelineBranch, TimelineNode } from '../../../data/models/core';
+import type { IStorageEngine } from '../../../data/storage/IStorageEngine';
+import type { Logger } from '../../../utils/logger';
+import { type MergeStrategy, NavigationEngine } from '../NavigationEngine';
 
 // Mock the storage engine
 const mockStorage = {
@@ -528,7 +528,7 @@ describe('NavigationEngine', () => {
 
       expect(result.success).toBe(false);
       expect(result.conflicts).toBeDefined();
-      expect(result.conflicts!.length).toBeGreaterThan(0);
+      expect(result.conflicts?.length).toBeGreaterThan(0);
     });
 
     it('should handle missing branches gracefully', async () => {
@@ -598,10 +598,10 @@ describe('NavigationEngine', () => {
       const path = await engine.findPath('node-a', 'node-b');
 
       expect(path).toBeDefined();
-      expect(path!.nodes).toHaveLength(2);
-      expect(path!.nodes[0].id).toBe('node-a');
-      expect(path!.nodes[1].id).toBe('node-b');
-      expect(path!.totalDistance).toBe(1);
+      expect(path?.nodes).toHaveLength(2);
+      expect(path?.nodes[0].id).toBe('node-a');
+      expect(path?.nodes[1].id).toBe('node-b');
+      expect(path?.totalDistance).toBe(1);
     });
 
     it('should return null for disconnected nodes', async () => {

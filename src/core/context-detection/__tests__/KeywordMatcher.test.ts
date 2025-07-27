@@ -1,6 +1,6 @@
+import type { ContextDefinition } from '../../../data/models/core';
+import type { Logger } from '../../../utils/logger';
 import { KeywordMatcher } from '../KeywordMatcher';
-import { ContextDefinition } from '../../../data/models/core';
-import { Logger } from '../../../utils/logger';
 
 describe('KeywordMatcher', () => {
   let matcher: KeywordMatcher;
