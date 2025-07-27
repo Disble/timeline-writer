@@ -184,14 +184,10 @@ export class ObsidianIntegration {
 
   private async processBackgroundTasks(): Promise<void> {
     // Background processing tasks
-    try {
-      // TODO: Implement background tasks like:
-      // - Storage optimization
-      // - Index rebuilding
-      // - Performance monitoring
-    } catch (error) {
-      this.logger.debug('Background task failed', error);
-    }
+    // TODO: Implement background tasks like:
+    // - Storage optimization
+    // - Index rebuilding
+    // - Performance monitoring
   }
 
   // Public API methods

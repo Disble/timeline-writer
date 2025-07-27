@@ -1,4 +1,4 @@
-import { randomUUID } from 'node:crypto';
+import { randomUUID } from 'crypto';
 import type { FileMetadata, VersionSnapshot } from '../../data/models/core';
 import type { IStorageEngine } from '../../data/storage/IStorageEngine';
 import { CompressionEngine } from './CompressionEngine';

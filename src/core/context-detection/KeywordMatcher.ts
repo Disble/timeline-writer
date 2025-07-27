@@ -151,9 +151,10 @@ export class KeywordMatcher {
       this.regexCache.set(keyword, regex);
     }
 
-    let match;
-    while ((match = regex.exec(content)) !== null) {
+    let match: RegExpExecArray | null = regex.exec(content);
+    while (match !== null) {
       positions.push(match.index);
+      match = regex.exec(content);
     }
 
     return positions;
