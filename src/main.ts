@@ -13,6 +13,9 @@ export default class TimelineWriterPlugin extends Plugin {
   async onload() {
     this.logger.info('Loading Timeline Writer plugin');
 
+    // Load styles
+    this.loadStyles();
+
     // Load settings
     await this.loadSettings();
 
@@ -67,6 +70,80 @@ export default class TimelineWriterPlugin extends Plugin {
 
   async saveSettings() {
     await this.saveData(this.settings);
+  }
+
+  private loadStyles() {
+    // Load CSS styles
+    const styleEl = document.createElement('style');
+    styleEl.id = 'timeline-writer-styles';
+    styleEl.textContent = `
+      .timeline-writer-icon {
+        color: var(--text-accent);
+      }
+      
+      .timeline-writer-icon:hover {
+        color: var(--text-accent-hover);
+      }
+      
+      .timeline-writer-modal {
+        padding: 20px;
+      }
+      
+      .timeline-writer-modal h3 {
+        margin-top: 0;
+        color: var(--text-accent);
+      }
+      
+      .timeline-writer-settings {
+        margin: 10px 0;
+      }
+      
+      .timeline-writer-settings label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+      }
+      
+      .timeline-writer-settings input[type="text"],
+      .timeline-writer-settings input[type="number"],
+      .timeline-writer-settings select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid var(--background-modifier-border);
+        border-radius: 4px;
+        background: var(--background-primary);
+        color: var(--text-normal);
+      }
+      
+      .timeline-writer-settings input[type="checkbox"] {
+        margin-right: 8px;
+      }
+      
+      .timeline-writer-button {
+        background: var(--interactive-accent);
+        color: var(--text-on-accent);
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin: 5px;
+      }
+      
+      .timeline-writer-button:hover {
+        background: var(--interactive-accent-hover);
+      }
+      
+      .timeline-writer-button.secondary {
+        background: var(--background-secondary);
+        color: var(--text-normal);
+        border: 1px solid var(--background-modifier-border);
+      }
+      
+      .timeline-writer-button.secondary:hover {
+        background: var(--background-modifier-hover);
+      }
+    `;
+    document.head.appendChild(styleEl);
   }
 
   private async handleFileModify(file: TFile) {

@@ -50,6 +50,7 @@ const context = await esbuild.context({
 
 if (watch) {
   await context.watch();
+  // eslint-disable-next-line no-console -- for debugging
   console.log("👀 Watching for changes...");
 } else {
   await context.rebuild();
