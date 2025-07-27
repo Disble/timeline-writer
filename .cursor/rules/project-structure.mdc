@@ -1,0 +1,76 @@
+---
+alwaysApply: true
+---
+
+
+# Timeline Writer Project Structure
+
+This is an Obsidian plugin for temporal versioning with intelligent context detection for fiction writers.
+
+## Core Architecture
+
+The main entry point is [main.ts](mdc:src/main.ts), which initializes the plugin and sets up the core systems.
+
+### Core Systems
+- **Timeline Engine**: [src/core/timeline-engine/TimelineEngine.ts](mdc:src/core/timeline-engine/TimelineEngine.ts) - Manages timeline nodes and branches with atomic operations
+- **Context Detection**: [src/core/context-detection/](mdc:src/core/context-detection/) - AI-powered context detection algorithms
+- **Version Manager**: [src/core/version-manager/](mdc:src/core/version-manager/) - Hybrid versioning system with checkpoints and diffs
+- **Metadata Engine**: [src/core/metadata-engine/](mdc:src/core/metadata-engine/) - Metadata processing and analysis
+
+### Data Layer
+- **Models**: [src/data/models/core.ts](mdc:src/data/models/core.ts) - Core TypeScript interfaces and data structures
+- **Storage**: [src/data/storage/](mdc:src/data/storage/) - Storage engines and database management
+- **Migrations**: [src/data/migrations/](mdc:src/data/migrations/) - Data migration framework
+
+### UI Components
+- **Timeline View**: [src/ui/timeline-view/](mdc:src/ui/timeline-view/) - Timeline visualization components
+- **Comparison View**: [src/ui/comparison-view/](mdc:src/ui/comparison-view/) - Version comparison interface
+- **Settings Panel**: [src/ui/settings-panel/](mdc:src/ui/settings-panel/) - Plugin configuration
+
+### Configuration
+- **Build**: [esbuild.config.mjs](mdc:esbuild.config.mjs) - Build configuration
+- **Package**: [package.json](mdc:package.json) - Dependencies and scripts (uses npm, not yarn)
+- **TypeScript**: [tsconfig.json](mdc:tsconfig.json) - TypeScript configuration with strict rules
+
+## Development Guidelines
+- Always use TypeScript with strict typing
+- Follow functional programming paradigms
+- Use atomic operations for data consistency
+- Write comprehensive tests for all components
+- Use npm for package management (yarn.lock is not included)
+
+# Timeline Writer Project Structure
+
+This is an Obsidian plugin for temporal versioning with intelligent context detection for fiction writers.
+
+## Core Architecture
+
+The main entry point is [main.ts](mdc:src/main.ts), which initializes the plugin and sets up the core systems.
+
+### Core Systems
+- **Timeline Engine**: [src/core/timeline-engine/TimelineEngine.ts](mdc:src/core/timeline-engine/TimelineEngine.ts) - Manages timeline nodes and branches with atomic operations
+- **Context Detection**: [src/core/context-detection/](mdc:src/core/context-detection/) - AI-powered context detection algorithms
+- **Version Manager**: [src/core/version-manager/](mdc:src/core/version-manager/) - Hybrid versioning system with checkpoints and diffs
+- **Metadata Engine**: [src/core/metadata-engine/](mdc:src/core/metadata-engine/) - Metadata processing and analysis
+
+### Data Layer
+- **Models**: [src/data/models/core.ts](mdc:src/data/models/core.ts) - Core TypeScript interfaces and data structures
+- **Storage**: [src/data/storage/](mdc:src/data/storage/) - Storage engines and database management
+- **Migrations**: [src/data/migrations/](mdc:src/data/migrations/) - Data migration framework
+
+### UI Components
+- **Timeline View**: [src/ui/timeline-view/](mdc:src/ui/timeline-view/) - Timeline visualization components
+- **Comparison View**: [src/ui/comparison-view/](mdc:src/ui/comparison-view/) - Version comparison interface
+- **Settings Panel**: [src/ui/settings-panel/](mdc:src/ui/settings-panel/) - Plugin configuration
+
+### Configuration
+- **Build**: [esbuild.config.mjs](mdc:esbuild.config.mjs) - Build configuration
+- **Package**: [package.json](mdc:package.json) - Dependencies and scripts (uses npm, not yarn)
+- **TypeScript**: [tsconfig.json](mdc:tsconfig.json) - TypeScript configuration with strict rules
+
+## Development Guidelines
+- Always use TypeScript with strict typing
+- Follow functional programming paradigms
+- Use atomic operations for data consistency
+- Write comprehensive tests for all components
+- Use npm for package management (yarn.lock is not included)

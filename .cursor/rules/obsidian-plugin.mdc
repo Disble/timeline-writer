@@ -1,0 +1,54 @@
+---
+globs: src/main.ts,src/ui/**/*.ts,src/ui/**/*.tsx
+---
+# Obsidian Plugin Development
+
+## Plugin Structure
+- Main entry point: [main.ts](mdc:src/main.ts)
+- Manifest configuration: [manifest.json](mdc:manifest.json)
+- Settings: [src/ui/settings-panel/](mdc:src/ui/settings-panel/)
+
+## Obsidian API Integration
+
+### Plugin Lifecycle
+```typescript
+export default class TimelineWriterPlugin extends Plugin {
+  async onload() {
+    // Initialize storage, UI, and event listeners
+  }
+
+  async onunload() {
+    // Cleanup resources and event listeners
+  }
+}
+```
+
+### UI Components
+- Use React for complex UI components
+- Integrate with Obsidian's UI system
+- Follow Obsidian's design patterns
+- Use Obsidian's modal and setting APIs
+
+### File Operations
+- Use Obsidian's file API for safe file operations
+- Handle file events (create, modify, delete)
+- Respect Obsidian's file system abstractions
+- Use proper error handling for file operations
+
+### Settings
+- Implement settings using Obsidian's settings API
+- Store settings in Obsidian's data store
+- Provide user-friendly configuration options
+- Validate settings on save
+
+### Performance
+- Minimize impact on Obsidian's performance
+- Use efficient event listeners
+- Implement proper cleanup on plugin unload
+- Cache data appropriately
+
+### Error Handling
+- Log errors using Obsidian's console
+- Provide user-friendly error messages
+- Handle Obsidian API failures gracefully
+- Don't crash the main application

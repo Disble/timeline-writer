@@ -81,7 +81,7 @@ Timeline Writer permite a los escritores de ficción gestionar múltiples contex
 git clone <repository-url>
 cd timeline-writer
 
-# Instalar dependencias (cuando esté implementado)
+# Instalar dependencias
 npm install
 
 # Desarrollo con hot reload
@@ -93,6 +93,8 @@ npm test
 # Build para producción
 npm run build
 ```
+
+**Nota**: Este proyecto utiliza npm como gestor de paquetes. No se incluye yarn.lock en el repositorio.
 
 ### Estructura del Proyecto
 ```

@@ -1,7 +1,7 @@
 import { TimelineEngine } from '../TimelineEngine';
 import { IStorageEngine } from '../../../data/storage/IStorageEngine';
 import { mock, MockProxy } from 'jest-mock-extended';
-import { FileMetadata } from '../../../data/models/core';
+import { FileMetadata, TimelineNode } from '../../../data/models/core';
 
 describe('TimelineEngine', () => {
   let storage: MockProxy<IStorageEngine>;
@@ -35,15 +35,68 @@ describe('TimelineEngine', () => {
         expect.objectContaining({
           fileId,
           currentVersion: node.id,
-        }),
+        })
       );
+    });
+
+    it('should use atomic append operation when parent node exists', async () => {
+      const fileId = 'test-file';
+      const label = 'Test Node';
+      const isCheckpoint = false;
+      const parentNode: TimelineNode = {
+        id: 'parent-1',
+        timestamp: new Date(),
+        parentIds: [],
+        childIds: [],
+        contextId: 'default',
+        label: 'Parent Node',
+        isCheckpoint: false,
+        metadata: {
+          fileId,
+          filePath: 'test.md',
+          wordCount: 0,
+          characterCount: 0,
+          contentHash: 'hash',
+          createdBy: 'auto',
+        },
+      };
+
+      storage.getFileHistory.mockResolvedValue({
+        fileId,
+        fileName: 'test.md',
+        currentVersion: parentNode.id,
+        versions: [],
+        branches: [],
+        lastModified: new Date(),
+        metadata: {} as FileMetadata,
+      });
+      storage.getNode.mockResolvedValue(parentNode);
+      storage.appendChildToNode.mockResolvedValue(true);
+
+      const node = await engine.createNode(fileId, label, isCheckpoint);
+
+      expect(node).toBeDefined();
+      expect(node.parentIds).toEqual([parentNode.id]);
+      expect(storage.appendChildToNode).toHaveBeenCalledWith(
+        parentNode.id,
+        node.id
+      );
+      expect(storage.saveNode).not.toHaveBeenCalledWith(parentNode);
     });
   });
 
   describe('getTimeline', () => {
     it('should return the file history', async () => {
       const fileId = 'test-file';
-      const history = { fileId, currentVersion: '1', versions: [], branches: [], fileName: 'test', lastModified: new Date(), metadata: {} as FileMetadata };
+      const history = {
+        fileId,
+        currentVersion: '1',
+        versions: [],
+        branches: [],
+        fileName: 'test',
+        lastModified: new Date(),
+        metadata: {} as FileMetadata,
+      };
       storage.getFileHistory.mockResolvedValue(history);
 
       const result = await engine.getTimeline(fileId);

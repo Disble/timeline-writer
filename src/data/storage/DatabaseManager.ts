@@ -238,6 +238,55 @@ export class DatabaseManager {
     }
   }
 
+  async appendChildToNode(nodeId: string, childId: string): Promise<boolean> {
+    if (!this.db) throw new Error('Database not initialized');
+
+    try {
+      // Use a transaction to ensure atomicity
+      this.db.exec('BEGIN TRANSACTION');
+
+      // Get current child_ids
+      const stmt = this.db.prepare(
+        'SELECT child_ids FROM timeline_nodes WHERE id = ?'
+      );
+      const result = stmt.get([nodeId]);
+      stmt.free();
+
+      if (!result) {
+        this.db.exec('ROLLBACK');
+        return false;
+      }
+
+      const currentChildIds = JSON.parse(result[0] as string) as string[];
+
+      // Check if childId already exists to avoid duplicates
+      if (currentChildIds.includes(childId)) {
+        this.db.exec('ROLLBACK');
+        return true; // Already exists, consider it successful
+      }
+
+      // Append the new childId
+      const updatedChildIds = [...currentChildIds, childId];
+
+      // Update the node with new child_ids
+      const updateStmt = this.db.prepare(
+        'UPDATE timeline_nodes SET child_ids = ? WHERE id = ?'
+      );
+      updateStmt.run([JSON.stringify(updatedChildIds), nodeId]);
+      updateStmt.free();
+
+      this.db.exec('COMMIT');
+      this.logger.debug('Child appended to node', { nodeId, childId });
+      return true;
+    } catch (error) {
+      if (this.db) {
+        this.db.exec('ROLLBACK');
+      }
+      this.logger.error('Failed to append child to node', error);
+      throw error;
+    }
+  }
+
   async saveVersionSnapshot(snapshot: VersionSnapshot): Promise<void> {
     if (!this.db) throw new Error('Database not initialized');
 
@@ -289,7 +338,9 @@ export class DatabaseManager {
       }
       stmt.free();
 
-      return results.map(row => this.mapRowToVersionSnapshot(row as VersionSnapshotRow));
+      return results.map(row =>
+        this.mapRowToVersionSnapshot(row as VersionSnapshotRow)
+      );
     } catch (error) {
       this.logger.error('Failed to get file version history', error);
       throw error;
@@ -339,7 +390,9 @@ export class DatabaseManager {
       }
       stmt.free();
 
-      return results.map(row => this.mapRowToContextDefinition(row as ContextDefinitionRow));
+      return results.map(row =>
+        this.mapRowToContextDefinition(row as ContextDefinitionRow)
+      );
     } catch (error) {
       this.logger.error('Failed to get all contexts', error);
       throw error;
@@ -401,7 +454,9 @@ export class DatabaseManager {
     return snapshot;
   }
 
-  private mapRowToContextDefinition(row: ContextDefinitionRow): ContextDefinition {
+  private mapRowToContextDefinition(
+    row: ContextDefinitionRow
+  ): ContextDefinition {
     return {
       id: row.id,
       name: row.name,

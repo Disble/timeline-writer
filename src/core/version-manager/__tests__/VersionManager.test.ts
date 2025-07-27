@@ -40,7 +40,7 @@ describe('VersionManager', () => {
 
       storage.getFileHistory.mockResolvedValue({ currentVersion: 'node1' } as FileVersionHistory);
       storage.getNode.mockResolvedValue(parentNode);
-      storage.getSnapshot.mockResolvedValue(parentSnapshot);
+      storage.getSnapshots.mockResolvedValue([parentSnapshot]);
 
       const snapshot = await manager.createVersionSnapshot(fileId, newContent);
 

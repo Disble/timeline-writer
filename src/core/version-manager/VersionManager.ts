@@ -22,9 +22,13 @@ export class VersionManager implements IVersionManager {
   async createVersionSnapshot(fileId: string, content: string): Promise<VersionSnapshot> {
     const history = await this.storage.getFileHistory(fileId);
     const parentNode = history?.currentVersion ? await this.storage.getNode(history.currentVersion) : null;
-    const parentSnapshot = parentNode?.metadata.contentHash
-      ? await this.storage.getSnapshot(parentNode.metadata.contentHash)
-      : null;
+    
+    let parentSnapshot: VersionSnapshot | null = null;
+    if (parentNode) {
+      const parentSnapshots = await this.storage.getSnapshots(parentNode.id);
+      parentSnapshot =
+        parentSnapshots.length > 0 ? parentSnapshots[0] || null : null;
+    }
 
     const diff = parentSnapshot
       ? this.diffEngine.createDiff(parentSnapshot.fullContent || '', content)
@@ -82,9 +86,12 @@ export class VersionManager implements IVersionManager {
 
     if (snapshot.diffFromParent) {
       const parentNode = await this.storage.getNode(snapshot.nodeId);
-      const parentSnapshot = parentNode?.metadata.contentHash
-        ? await this.storage.getSnapshot(parentNode.metadata.contentHash)
-        : null;
+      let parentSnapshot: VersionSnapshot | null = null;
+      if (parentNode) {
+        const parentSnapshots = await this.storage.getSnapshots(parentNode.id);
+        parentSnapshot =
+          parentSnapshots.length > 0 ? parentSnapshots[0] || null : null;
+      }
 
       if (parentSnapshot?.fullContent) {
         const decompressedDiffString = this.compressionEngine.decompress(

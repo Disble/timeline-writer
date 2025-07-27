@@ -41,8 +41,7 @@ export class TimelineEngine implements ITimelineEngine {
     await this.storage.saveNode(newNode);
 
     if (parentNode) {
-      parentNode.childIds.push(newNode.id);
-      await this.storage.saveNode(parentNode);
+      await this.storage.appendChildToNode(parentNode.id, newNode.id);
     }
 
     const newHistory: FileVersionHistory = history || {

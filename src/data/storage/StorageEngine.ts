@@ -5,8 +5,10 @@ import { DatabaseManager } from './DatabaseManager';
 import {
   VersionSnapshot,
   CompressedDiff,
+  TimelineNode,
+  TimelineBranch,
+  FileVersionHistory,
   // FileMetadata, // TODO: Implement file metadata operations
-  // TimelineNode, // TODO: Implement timeline node operations
 } from '../models/core';
 import { Logger } from '../../utils/logger';
 
@@ -314,6 +316,71 @@ export class StorageEngine {
     // Implementation for cleaning up old snapshots
     // This would involve database queries to remove old versions
     this.logger.info('Storage cleanup completed', { retentionDays });
+  }
+
+  // IStorageEngine interface methods
+  async getNode(nodeId: string): Promise<TimelineNode | null> {
+    return this.dbManager.getTimelineNode(nodeId);
+  }
+
+  async saveNode(node: TimelineNode): Promise<void> {
+    await this.dbManager.saveTimelineNode(node);
+  }
+
+  async getNodes(_fileId: string): Promise<TimelineNode[]> {
+    // This would need to be implemented in DatabaseManager
+    // For now, return empty array
+    return [];
+  }
+
+  async appendChildToNode(nodeId: string, childId: string): Promise<boolean> {
+    return this.dbManager.appendChildToNode(nodeId, childId);
+  }
+
+  async getBranch(_branchId: string): Promise<TimelineBranch | null> {
+    // This would need to be implemented in DatabaseManager
+    return null;
+  }
+
+  async saveBranch(_branch: TimelineBranch): Promise<void> {
+    // This would need to be implemented in DatabaseManager
+  }
+
+  async getBranches(_fileId: string): Promise<TimelineBranch[]> {
+    // This would need to be implemented in DatabaseManager
+    return [];
+  }
+
+  async getSnapshot(_snapshotId: string): Promise<VersionSnapshot | null> {
+    // This would need to be implemented in DatabaseManager
+    return null;
+  }
+
+  async saveSnapshotById(snapshot: VersionSnapshot): Promise<void> {
+    await this.dbManager.saveVersionSnapshot(snapshot);
+  }
+
+  async getSnapshots(_nodeId: string): Promise<VersionSnapshot[]> {
+    // This would need to be implemented in DatabaseManager
+    return [];
+  }
+
+  async getFileHistory(_fileId: string): Promise<FileVersionHistory | null> {
+    // This would need to be implemented in DatabaseManager
+    return null;
+  }
+
+  async saveFileHistory(_history: FileVersionHistory): Promise<void> {
+    // This would need to be implemented in DatabaseManager
+  }
+
+  async get(_key: string): Promise<string | null> {
+    // This would need to be implemented in DatabaseManager
+    return null;
+  }
+
+  async set(_key: string, _value: string): Promise<void> {
+    // This would need to be implemented in DatabaseManager
   }
 
   async close(): Promise<void> {

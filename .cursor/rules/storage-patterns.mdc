@@ -1,0 +1,53 @@
+
+---
+globs: src/data/storage/*.ts,src/data/models/*.ts
+---
+# Storage and Data Layer Patterns
+
+## Storage Engine Architecture
+The storage system uses a layered approach:
+- **IStorageEngine**: Interface defining storage operations
+- **StorageEngine**: Main implementation with compression and diffing
+- **DatabaseManager**: SQLite operations with atomic transactions
+
+## Key Patterns
+
+### Atomic Operations
+Always use atomic operations for data consistency:
+```typescript
+// ✅ Good: Atomic append operation
+await this.storage.appendChildToNode(parentNodeId, childId);
+
+// ❌ Bad: Direct mutation with race conditions
+parentNode.childIds.push(childId);
+await this.storage.saveNode(parentNode);
+```
+
+### Transaction Management
+Use transactions for multi-step operations:
+```typescript
+this.db.exec('BEGIN TRANSACTION');
+try {
+  // Multiple operations
+  this.db.exec('COMMIT');
+} catch (error) {
+  this.db.exec('ROLLBACK');
+  throw error;
+}
+```
+
+### Data Models
+- Define clear interfaces in [core.ts](mdc:src/data/models/core.ts)
+- Use proper TypeScript types for all fields
+- Include metadata for versioning and context
+
+### Error Handling
+- Log all storage operations with context
+- Use proper error types and messages
+- Implement rollback mechanisms for failed operations
+
+### Performance Considerations
+- Use compression for large content (pako)
+- Implement caching for frequently accessed data
+- Use efficient queries with proper indexing
+- Clean up old data with retention policies

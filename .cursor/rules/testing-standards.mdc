@@ -1,0 +1,65 @@
+---
+globs: **/__tests__/*.ts,**/*.test.ts,**/*.spec.ts
+---
+
+---
+globs: "**/__tests__/*.ts,**/*.test.ts,**/*.spec.ts"
+---
+# Testing Standards
+
+## Test Structure
+- Place tests in `__tests__` directories or alongside source files with `.test.ts` extension
+- Use descriptive test names that explain the expected behavior
+- Group related tests using `describe` blocks
+
+## Jest Configuration
+- Use Jest with TypeScript support (ts-jest)
+- Configure mocks for Obsidian API in [setup.ts](mdc:src/__tests__/setup.ts)
+- Use `jest-mock-extended` for interface mocking
+
+## Test Patterns
+
+### Unit Tests
+```typescript
+describe('ComponentName', () => {
+  let mockStorage: MockProxy<IStorageEngine>;
+  
+  beforeEach(() => {
+    mockStorage = mock<IStorageEngine>();
+  });
+
+  it('should perform expected behavior', async () => {
+    // Arrange
+    mockStorage.getNode.mockResolvedValue(mockNode);
+    
+    // Act
+    const result = await component.method();
+    
+    // Assert
+    expect(result).toBeDefined();
+    expect(mockStorage.getNode).toHaveBeenCalledWith('expected-id');
+  });
+});
+```
+
+### Integration Tests
+- Test interactions between components
+- Mock external dependencies
+- Test error scenarios and edge cases
+
+### Coverage Goals
+- Aim for >80% test coverage
+- Focus on business logic and critical paths
+- Test error handling and edge cases
+
+## Mocking Guidelines
+- Mock Obsidian API calls
+- Use `jest-mock-extended` for interface mocking
+- Create realistic test data
+- Reset mocks between tests
+
+## Test Data
+- Use factories for creating test objects
+- Keep test data minimal and focused
+- Use meaningful test values
+- Document complex test scenarios

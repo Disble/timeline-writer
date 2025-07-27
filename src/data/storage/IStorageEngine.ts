@@ -5,6 +5,7 @@ export interface IStorageEngine {
   getNode(nodeId: string): Promise<TimelineNode | null>;
   saveNode(node: TimelineNode): Promise<void>;
   getNodes(fileId: string): Promise<TimelineNode[]>;
+  appendChildToNode(nodeId: string, childId: string): Promise<boolean>;
 
   // Branch operations
   getBranch(branchId: string): Promise<TimelineBranch | null>;

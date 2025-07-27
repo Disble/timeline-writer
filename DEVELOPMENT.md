@@ -4,7 +4,7 @@
 
 ### Prerequisites
 - Node.js 18+
-- npm or yarn
+- npm
 - Obsidian 1.4.16+
 
 ### Setup

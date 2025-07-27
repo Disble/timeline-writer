@@ -1,0 +1,49 @@
+---
+globs: *.ts,*.tsx
+alwaysApply: false
+---
+# TypeScript Development Standards
+
+## Core Principles
+- Use strict TypeScript configuration with `strict: true`
+- Always define interfaces for data structures
+- Prefer functional programming paradigms
+- Use strong typing - avoid `any` type
+- Use `as` assertion only as last resort
+
+## Code Style
+- Use meaningful variable and function names
+- Write self-documenting code
+- Single responsibility principle for functions and classes
+- Use `const` assertions where appropriate
+- Prefer `interface` over `type` for object shapes
+
+## Error Handling
+```typescript
+try {
+  await riskyOperation();
+} catch (error) {
+  logger.error('Operation failed', { error, context });
+  // Handle gracefully with proper error types
+}
+```
+
+## Atomic Operations
+When working with data that could have race conditions:
+- Use atomic database operations (see [TimelineEngine.ts](mdc:src/core/timeline-engine/TimelineEngine.ts))
+- Avoid direct mutation of shared state
+- Implement proper locking mechanisms when needed
+
+## Testing
+- Write unit tests for all business logic
+- Use Jest with proper mocking
+- Aim for >80% test coverage
+- Test error scenarios and edge cases
+
+## Imports
+- Use relative imports for local files
+- Group imports: external libraries, then internal modules
+- Use named imports over default imports when possible
+
+- Group imports: external libraries, then internal modules
+- Use named imports over default imports when possible

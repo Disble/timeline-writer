@@ -52,6 +52,12 @@ export const createMockApp = () => ({
     on: jest.fn(),
     getFileCache: jest.fn(),
   },
+  keymap: {},
+  scope: {},
+  fileManager: {},
+  lastEvent: {},
+  dom: {},
+  internalPlugins: {},
 });
 
 export const createMockPlugin = () => ({
