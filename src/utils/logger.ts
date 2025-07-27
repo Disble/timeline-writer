@@ -1,4 +1,4 @@
-import { LogLevel, Logger as ILogger } from '../data/models/core';
+import type { Logger as ILogger, LogLevel } from '../data/models/core';
 
 export class Logger implements ILogger {
   private static instance: Logger;

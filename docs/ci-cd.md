@@ -52,7 +52,7 @@ Comprehensive pipeline with advanced optimizations and parallel execution:
 
 1. **Type Check**: Fast TypeScript validation (5 min timeout)
 2. **Lint**: Code quality checks (5 min timeout)
-3. **Format**: Prettier validation (3 min timeout)
+3. **Format**: Biome formatting validation (3 min timeout)
 4. **Security**: Dependency audit (10 min timeout)
 5. **Build and Test**: Matrix testing on Node 18/20 (15 min timeout)
 6. **Lint Staged**: PR-specific file validation (5 min timeout)
@@ -153,8 +153,7 @@ The `lint-staged` configuration in `package.json` automatically formats staged f
 ```json
 {
   "lint-staged": {
-    "*.{ts,tsx}": ["eslint --fix", "prettier --write"],
-    "*.{json,md,yml,yaml}": ["prettier --write"]
+    "*.{ts,tsx,js,jsx,json}": ["biome check --write"]
   }
 }
 ```
@@ -175,7 +174,7 @@ Runs TypeScript compiler in no-emit mode to check types without generating outpu
 npm run lint
 ```
 
-Runs ESLint on all TypeScript files in the `src` directory.
+Runs Biome linting on all files in the `src` directory.
 
 ### Formatting
 
@@ -183,7 +182,7 @@ Runs ESLint on all TypeScript files in the `src` directory.
 npm run format
 ```
 
-Checks if all files are properly formatted with Prettier.
+Checks if all files are properly formatted with Biome.
 
 ### Building
 
@@ -238,24 +237,24 @@ npx tsc --noEmit src/path/to/file.ts
 npx tsc --noEmit --listFiles
 ```
 
-#### ESLint Issues
+#### Linting Issues
 
 ```bash
 # Fix auto-fixable issues
 npm run lint:fix
 
 # Check specific file
-npx eslint src/path/to/file.ts
+npm run lint src/path/to/file.ts
 ```
 
-#### Prettier Issues
+#### Biome Issues
 
 ```bash
-# Fix formatting
-npm run format:fix
+# Fix formatting and linting
+npm run check:fix
 
 # Check specific file
-npx prettier --check src/path/to/file.ts
+npm run check src/path/to/file.ts
 ```
 
 ### CI Debugging
@@ -305,17 +304,16 @@ npm test
 
 ## Configuration Files
 
-### ESLint
+### Linting (Legacy Reference)
 
-- **File**: `.eslintrc.js`
-- **Purpose**: Code quality and style rules
-- **Extends**: TypeScript and React configurations
+- **Previous tool**: ESLint (now replaced by Biome)
+- **Current tool**: See Biome section above
 
-### Prettier
+### Biome
 
-- **File**: `.prettierrc`
-- **Purpose**: Code formatting rules
-- **Integration**: Works with ESLint via `eslint-config-prettier`
+- **File**: `biome.json`
+- **Purpose**: Code linting, formatting, and import organization
+- **Integration**: All-in-one tool replacing ESLint + Prettier
 
 ### TypeScript
 

@@ -1,5 +1,5 @@
-import { ContextSignal, ContextDefinition } from '../../data/models/core';
-import { Logger } from '../../utils/logger';
+import type { ContextDefinition, ContextSignal } from '../../data/models/core';
+import type { Logger } from '../../utils/logger';
 
 export interface KeywordMatch {
   keyword: string;
@@ -151,9 +151,10 @@ export class KeywordMatcher {
       this.regexCache.set(keyword, regex);
     }
 
-    let match;
-    while ((match = regex.exec(content)) !== null) {
+    let match: RegExpExecArray | null = regex.exec(content);
+    while (match !== null) {
       positions.push(match.index);
+      match = regex.exec(content);
     }
 
     return positions;

@@ -1,5 +1,2 @@
-# Run lint-staged on staged files first
-lint-staged
-
-# Then run full validation
+# Run full validation (type-check + biome check + build + test)
 npm run pre-commit

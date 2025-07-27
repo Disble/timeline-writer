@@ -1,6 +1,6 @@
-import { TimelineNode, TimelineBranch } from '../../data/models/core';
-import { IStorageEngine } from '../../data/storage/IStorageEngine';
-import { Logger } from '../../utils/logger';
+import type { TimelineBranch, TimelineNode } from '../../data/models/core';
+import type { IStorageEngine } from '../../data/storage/IStorageEngine';
+import type { Logger } from '../../utils/logger';
 
 export interface NavigationResult {
   success: boolean;
@@ -591,7 +591,7 @@ export class NavigationEngine {
 
   private async createMergedNode(
     baseNode: TimelineNode,
-    mergedContent: string,
+    _mergedContent: string,
     sourceNodeIds: string[]
   ): Promise<string> {
     // Create a new node representing the merge

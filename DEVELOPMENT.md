@@ -33,8 +33,12 @@ npm run build
 | `npm test`              | Run test suite                          |
 | `npm run test:watch`    | Run tests in watch mode                 |
 | `npm run test:coverage` | Run tests with coverage report          |
-| `npm run lint`          | Run ESLint                              |
-| `npm run lint:fix`      | Fix ESLint issues automatically         |
+| `npm run lint`          | Run Biome linter                        |
+| `npm run lint:fix`      | Fix linting issues automatically        |
+| `npm run format`        | Check code formatting with Biome        |
+| `npm run format:fix`    | Fix formatting issues automatically     |
+| `npm run check`         | Run Biome (lint + format + organize)    |
+| `npm run check:fix`     | Fix all Biome issues automatically      |
 | `npm run type-check`    | Check TypeScript types                  |
 | `npm run clean`         | Clean build artifacts                   |
 
@@ -266,7 +270,7 @@ Creates optimized bundle in `main.js`
 2. Follow existing code style and patterns
 3. Write tests for new functionality
 4. Update documentation as needed
-5. Run linting and type checking before committing
+5. Run Biome checks and type checking before committing
 6. Keep commits focused and descriptive
 
 ## Resources

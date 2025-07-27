@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        check: [type-check, lint, format]
+        check: [type-check, lint-and-format]
 
     steps:
       - name: Checkout code
@@ -37,50 +37,9 @@ jobs:
         if: matrix.check == 'type-check'
         run: npm run type-check
 
-      - name: Lint
-        if: matrix.check == 'lint'
-        run: npm run lint
-
-      - name: Format Check
-        if: matrix.check == 'format'
-        run: npm run format
-
-  # Lint staged files
-  lint-staged:
-    name: Lint Staged Files
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-          cache-dependency-path: package-lock.json
-
-      - name: Install dependencies
-        run: npm ci --prefer-offline --no-audit
-
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v42
-        with:
-          files: |
-            **/*.{ts,tsx}
-            **/*.{json,md,yml,yaml}
-
-      - name: Run lint-staged on changed files
-        if: steps.changed-files.outputs.any_changed == 'true'
-        run: |
-          npx lint-staged --verbose
-        env:
-          CI: true
+      - name: Lint and Format Check
+        if: matrix.check == 'lint-and-format'
+        run: npm run check
 
   # Build and test (depends on quick checks)
   build-and-test:

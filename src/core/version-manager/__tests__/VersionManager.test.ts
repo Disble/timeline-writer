@@ -1,11 +1,11 @@
-import { VersionManager } from '../VersionManager';
-import { IStorageEngine } from '../../../data/storage/IStorageEngine';
-import { mock, MockProxy } from 'jest-mock-extended';
-import {
+import { type MockProxy, mock } from 'jest-mock-extended';
+import type {
   FileVersionHistory,
   TimelineNode,
   VersionSnapshot,
 } from '../../../data/models/core';
+import type { IStorageEngine } from '../../../data/storage/IStorageEngine';
+import { VersionManager } from '../VersionManager';
 
 describe('VersionManager', () => {
   let storage: MockProxy<IStorageEngine>;

@@ -1,6 +1,6 @@
+import type { App } from 'obsidian';
 import TimelineWriterPlugin from '../main';
 import { createMockApp } from './setup';
-import { App } from 'obsidian';
 
 // Mock the ObsidianIntegration to avoid complex setup
 jest.mock('../integration/ObsidianIntegration', () => {

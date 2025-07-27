@@ -1,16 +1,16 @@
+import type { TFile } from 'obsidian';
+import type {
+  ContextShiftDetection,
+  TimelineNode,
+  VersionSnapshot,
+} from '../../../data/models/core';
+import type { Logger } from '../../../utils/logger';
+import type { TimelineEngine } from '../../timeline-engine/TimelineEngine';
+import type { VersionManager } from '../../version-manager/VersionManager';
 import {
   ContextVersioningIntegration,
-  IntegrationConfig,
+  type IntegrationConfig,
 } from '../ContextVersioningIntegration';
-import { VersionManager } from '../../version-manager/VersionManager';
-import { TimelineEngine } from '../../timeline-engine/TimelineEngine';
-import {
-  ContextShiftDetection,
-  VersionSnapshot,
-  TimelineNode,
-} from '../../../data/models/core';
-import { Logger } from '../../../utils/logger';
-import { TFile } from 'obsidian';
 
 // Mock the dependencies
 jest.mock('../../version-manager/VersionManager');

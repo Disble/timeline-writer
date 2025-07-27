@@ -162,7 +162,7 @@ timeline-writer/
 
 - **Build System**: esbuild with TypeScript support
 - **Installation Script**: PowerShell automation for Obsidian
-- **Development Tools**: ESLint, Prettier, Jest testing
+- **Development Tools**: Biome (linting + formatting), Jest testing
 - **Type Safety**: Strict TypeScript configuration
 - **Version Control**: Proper .gitignore with dist/ exclusion
 

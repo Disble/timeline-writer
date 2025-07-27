@@ -1,7 +1,7 @@
+import { type MockProxy, mock } from 'jest-mock-extended';
+import type { FileMetadata, TimelineNode } from '../../../data/models/core';
+import type { IStorageEngine } from '../../../data/storage/IStorageEngine';
 import { TimelineEngine } from '../TimelineEngine';
-import { IStorageEngine } from '../../../data/storage/IStorageEngine';
-import { mock, MockProxy } from 'jest-mock-extended';
-import { FileMetadata, TimelineNode } from '../../../data/models/core';
 
 describe('TimelineEngine', () => {
   let storage: MockProxy<IStorageEngine>;

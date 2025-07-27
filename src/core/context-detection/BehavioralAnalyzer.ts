@@ -1,5 +1,5 @@
-import { ContextSignal, FileOperation } from '../../data/models/core';
-import { Logger } from '../../utils/logger';
+import type { ContextSignal, FileOperation } from '../../data/models/core';
+import type { Logger } from '../../utils/logger';
 
 interface BehaviorPattern {
   averageWordCount: number;
