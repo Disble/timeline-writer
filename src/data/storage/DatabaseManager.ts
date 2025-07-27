@@ -95,7 +95,7 @@ export class DatabaseManager {
       this.logger.info('Initializing database...');
       const wasmPath = `${this.pluginPath}/${SQL_WASM_FILE}`;
       this.logger.info(`Loading wasm from: ${wasmPath}`);
-      
+
       const response = await this.app.vault.adapter.readBinary(wasmPath);
       const SQL = await initSqlJs({ wasmBinary: response });
       this.db = new SQL.Database();
